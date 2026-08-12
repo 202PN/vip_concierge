@@ -1,0 +1,708 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import GridGlobe from "../components/GridGlobe.astro";
+import ServiceCard from "../components/ServiceCard.astro";
+import CTABlock from "../components/CTABlock.astro";
+import { serviceGroups } from "../data/services";
+
+const cities = [
+  "Washington DC",
+  "Northern Virginia",
+  "Baltimore",
+  "New York",
+  "Boston",
+  "Miami",
+  "Palm Beach",
+  "Los Angeles",
+  "Cleveland",
+  "Cincinnati",
+];
+---
+
+<BaseLayout
+  title="VIP Concierge — First-class Transportation & Concierge | Washington, DC"
+  description="Secure transportation and concierge services for government, corporate, and diplomatic clients: armored and executive fleets, furnished apartments, travel arrangement, and document authentication. Washington, DC and all 50 states, 24/7."
+>
+  <!-- Hero carousel -->
+  <section class="hero" aria-roledescription="carousel" aria-label="VIP Concierge highlights">
+    <article class="slide is-active" aria-label="1 of 3">
+      <video class="slide-video" src="/capital_traffic-1080.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+      <div class="slide-scrim" aria-hidden="true"></div>
+      <div class="wrap slide-grid slide-grid-solo">
+        <div class="slide-copy">
+          <h1>First-class Transportation & Concierge</h1>
+          <div class="hero-foot">
+            <p class="lede on-red-soft">
+              Secure transportation and concierge services for government,
+              corporate, and diplomatic clients. Based in McLean, Virginia,
+              serving Washington and all 50 states, 24/7.
+            </p>
+            <div class="acts">
+              <a class="btn btn-light" href="/contact" data-track="hero-consult">Request a Consultation</a>
+              <a class="btn btn-ghost" href="/book" data-track="hero-book">Book Now</a>
+            </div>
+          </div>
+        </div>
+        <div class="slide-visual globe-visual" aria-hidden="true">
+          <GridGlobe />
+        </div>
+      </div>
+    </article>
+
+    <article class="slide" aria-label="2 of 3" aria-hidden="true">
+      <video class="slide-video" src="/driving_int_bw.mp4" muted loop playsinline preload="metadata" aria-hidden="true"></video>
+      <div class="slide-scrim" aria-hidden="true"></div>
+      <div class="wrap slide-grid slide-grid-solo">
+        <div class="slide-copy">
+          <h2 class="slide-title">A fleet for every mission profile.</h2>
+          <div class="hero-foot">
+            <p class="lede on-red-soft">
+              Level 6 armored Escalade and Maybach, the executive Mercedes
+              S580, and group vehicles from Sprinter to full coach. All
+              late-model, all professionally chauffeured.
+            </p>
+            <div class="acts">
+              <a class="btn btn-light" href="/fleet" data-track="hero-fleet">Explore the Fleet</a>
+              <a class="btn btn-ghost" href="/contact" data-track="hero-consult-2">Request a Consultation</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="slide" aria-label="3 of 3" aria-hidden="true">
+      <video class="slide-video" src="/traffic_bw.mp4" muted loop playsinline preload="metadata" aria-hidden="true"></video>
+      <div class="slide-scrim" aria-hidden="true"></div>
+      <div class="wrap slide-grid">
+        <div class="slide-copy">
+          <h2 class="slide-title">The capital region and all fifty states.</h2>
+          <div class="hero-foot">
+            <p class="lede on-red-soft">
+              Regular service across the capital region and major U.S. cities.
+              Need another city? We arrange coverage anywhere in the country.
+            </p>
+            <div class="acts">
+              <a class="btn btn-light" href="/service-areas" data-track="hero-areas">View Service Areas</a>
+              <a class="btn btn-ghost" href="/contact" data-track="hero-consult-3">Request a Consultation</a>
+            </div>
+          </div>
+        </div>
+        <div class="slide-visual map-visual" aria-hidden="true">
+          <svg viewBox="0 0 440 348" fill="none">
+            <!-- network map: DC hub, spokes to regularly served cities,
+                 dashed routes trailing beyond the frame = anywhere on request -->
+            <g stroke="#a31515" stroke-width="1.8" opacity="0.85" fill="none">
+              <path d="M320 168 Q 356 118 384 72"></path>
+              <path d="M320 168 Q 344 128 360 100"></path>
+              <path d="M320 168 Q 326 150 331 142"></path>
+              <path d="M320 168 Q 276 132 238 112"></path>
+              <path d="M320 168 Q 262 152 208 154"></path>
+              <path d="M320 168 Q 180 190 52 208"></path>
+              <path d="M320 168 Q 334 226 338 284"></path>
+              <path d="M320 168 Q 344 218 352 260"></path>
+            </g>
+            <!-- routes that leave the map: coverage beyond the named cities -->
+            <g stroke="#a31515" stroke-width="1.2" stroke-dasharray="2 5" opacity="0.5" fill="none">
+              <path d="M320 168 Q 230 80 96 10"></path>
+              <path d="M320 168 Q 220 250 60 322"></path>
+              <path d="M320 168 Q 396 230 438 296"></path>
+              <path d="M320 168 Q 180 160 4 140"></path>
+            </g>
+            <!-- unnamed destinations, reached on request -->
+            <g fill="#ffffff" opacity="0.4">
+              <circle cx="46" cy="58" r="2"></circle>
+              <circle cx="140" cy="146" r="2"></circle>
+              <circle cx="196" cy="238" r="2"></circle>
+              <circle cx="282" cy="218" r="2"></circle>
+              <circle cx="244" cy="86" r="2"></circle>
+            </g>
+            <g font-family="Libre Franklin Variable, Arial, sans-serif" font-size="12" font-weight="500" letter-spacing="0.5">
+              <circle cx="320" cy="168" r="7" stroke="#ffffff" stroke-width="2"></circle>
+              <circle cx="320" cy="168" r="3" fill="#ffffff"></circle>
+              <text x="304" y="194" fill="#ffffff" font-weight="600">Washington DC</text>
+              <circle cx="384" cy="72" r="4" fill="#ffffff"></circle>
+              <text x="360" y="58" fill="#b9b9c0">Boston</text>
+              <circle cx="360" cy="100" r="4" fill="#ffffff"></circle>
+              <text x="336" y="88" fill="#b9b9c0">New York</text>
+              <circle cx="331" cy="142" r="4" fill="#ffffff"></circle>
+              <text x="341" y="138" fill="#b9b9c0">Baltimore</text>
+              <circle cx="238" cy="112" r="4" fill="#ffffff"></circle>
+              <text x="206" y="98" fill="#b9b9c0">Cleveland</text>
+              <circle cx="208" cy="154" r="4" fill="#ffffff"></circle>
+              <text x="172" y="176" fill="#b9b9c0">Cincinnati</text>
+              <circle cx="52" cy="208" r="4" fill="#ffffff"></circle>
+              <text x="24" y="230" fill="#b9b9c0">Los Angeles</text>
+              <circle cx="352" cy="260" r="4" fill="#ffffff"></circle>
+              <text x="362" y="258" fill="#b9b9c0">Palm Beach</text>
+              <circle cx="338" cy="284" r="4" fill="#ffffff"></circle>
+              <text x="348" y="296" fill="#b9b9c0">Miami</text>
+              <text x="14" y="342" fill="#b9b9c0" opacity="0.9">+ anywhere in the 50 states, arranged on request</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </article>
+
+    <button type="button" class="arrow arrow-prev" aria-label="Previous slide">
+      <svg width="16" height="56" viewBox="0 0 16 56" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M15 1 L1 28 L15 55"></path>
+      </svg>
+    </button>
+    <button type="button" class="arrow arrow-next" aria-label="Next slide">
+      <svg width="16" height="56" viewBox="0 0 16 56" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M1 1 L15 28 L1 55"></path>
+      </svg>
+    </button>
+    <div class="dots">
+      <button type="button" class="dot" aria-label="Slide 1" aria-current="true"></button>
+      <button type="button" class="dot" aria-label="Slide 2"></button>
+      <button type="button" class="dot" aria-label="Slide 3"></button>
+    </div>
+  </section>
+
+  <script>
+    const hero = document.querySelector(".hero");
+    const slides = [...(hero?.querySelectorAll(".slide") ?? [])];
+    const dots = [...(hero?.querySelectorAll(".dot") ?? [])];
+    let index = 0;
+    let timer: ReturnType<typeof setInterval> | undefined;
+
+    function go(i: number) {
+      index = (i + slides.length) % slides.length;
+      slides.forEach((s, n) => {
+        s.classList.toggle("is-active", n === index);
+        s.setAttribute("aria-hidden", String(n !== index));
+        const v = s.querySelector("video");
+        if (v) {
+          if (n === index) v.play().catch(() => {});
+          else v.pause();
+        }
+      });
+      dots.forEach((d, n) => {
+        if (n === index) d.setAttribute("aria-current", "true");
+        else d.removeAttribute("aria-current");
+      });
+    }
+
+    dots.forEach((d, n) =>
+      d.addEventListener("click", () => {
+        go(n);
+        clearInterval(timer); // manual choice ends auto-rotation
+      })
+    );
+
+    hero?.querySelector(".arrow-prev")?.addEventListener("click", () => {
+      go(index - 1);
+      clearInterval(timer);
+    });
+    hero?.querySelector(".arrow-next")?.addEventListener("click", () => {
+      go(index + 1);
+      clearInterval(timer);
+    });
+
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      timer = setInterval(() => go(index + 1), 7000);
+    }
+  </script>
+
+  <!-- Chancery capability band -->
+  <section class="band" aria-label="Capabilities">
+    <ul>
+      <li>Armored &amp; executive fleet</li>
+      <li>Certified security chauffeurs</li>
+      <li>Embassy &amp; delegation experience</li>
+      <li>24/7, all 50 states</li>
+    </ul>
+  </section>
+
+  <!-- Services directory: Transportation + Concierge -->
+  <section class="directory field-deep">
+    <div class="wrap">
+      <h2 class="h2">Services</h2>
+      <p class="dir-lede on-red-soft">
+        Transportation, accommodation, travel, and document services. One
+        team, one professional standard.
+      </p>
+      {serviceGroups.map((g) => (
+        <div class="dir-group">
+          <div class="group-head">
+            <h3>{g.title}</h3>
+            <p class="on-red-soft">{g.blurb}</p>
+          </div>
+          <ul class="dir-list">
+            {g.items.map((s) => (
+              <ServiceCard title={s.name} href={s.href} summary={s.note} />
+            ))}
+          </ul>
+        </div>
+      ))}
+      <a class="dir-all" href="/services">All services →</a>
+    </div>
+  </section>
+
+  <!-- White relief: fleet + coverage -->
+  <section class="duo field-paper">
+    <div class="cell">
+      <h2 class="h2">Fleet</h2>
+      <dl>
+        <div><dt>Armored</dt><dd>Bulletproof Escalade · Bulletproof Maybach</dd></div>
+        <div><dt>Executive</dt><dd>Mercedes S580 · Escalade</dd></div>
+        <div><dt>Group</dt><dd>Mercedes Sprinter · Toyota Sienna · Party Bus · Coach Bus</dd></div>
+      </dl>
+      <p class="tbd on-paper-gray">Photography and capacities [TBD]</p>
+      <a class="link" href="/fleet">Full fleet →</a>
+    </div>
+    <div class="cell">
+      <h2 class="h2">Service areas</h2>
+      <p class="cell-copy on-paper-gray">
+        Based in McLean, Virginia. Regular service across the capital region
+        and major U.S. cities. Anywhere else in the 50 states on request.
+      </p>
+      <p class="cities">{cities.join(" · ")} · <a href="/contact">+ any city on request</a></p>
+      <a class="link" href="/service-areas">All service areas →</a>
+    </div>
+  </section>
+
+  <CTABlock />
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    /* Full-viewport cinematic carousel; runs up under the transparent header
+       and rests each slide's copy low, in the Mercedes manner. Slides stack
+       in one grid cell so the tallest slide sets the hero's height. */
+    margin-top: calc(-1 * var(--header-h));
+    display: grid;
+  }
+
+  .slide {
+    grid-area: 1 / 1;
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: flex-end;
+    padding-block: calc(var(--header-h) + 2rem) clamp(4.5rem, 10vh, 7rem);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 700ms ease, visibility 700ms;
+    pointer-events: none;
+  }
+
+  .slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  /* Orchestrated entrance: the copy rises as the slide arrives,
+     and the active film breathes with a slow cinematic drift. */
+  .slide .slide-copy {
+    opacity: 0;
+    translate: 0 28px;
+    transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+      translate 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .slide.is-active .slide-copy {
+    opacity: 1;
+    translate: 0 0;
+    transition-delay: 150ms;
+  }
+
+  .slide.is-active .slide-video {
+    animation: film-drift 9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes film-drift {
+    from {
+      scale: 1;
+    }
+    to {
+      scale: 1.05;
+    }
+  }
+
+  .slide-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: end;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .slide-grid-solo {
+    grid-template-columns: 1fr;
+  }
+
+  .slide-visual {
+    align-self: center;
+    justify-self: end;
+    width: min(34vw, 26rem);
+    opacity: 0.95;
+  }
+
+  /* Slide 1's globe at monumental scale, raised, bleeding off the right edge;
+     it sits behind the headline, never over it. */
+  .globe-visual {
+    position: absolute;
+    top: 30%;
+    right: clamp(-16rem, -12vw, -7rem);
+    translate: 0 -50%;
+    width: min(56vw, 50rem);
+    opacity: 0.9;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .slide-copy {
+    position: relative;
+    z-index: 1;
+  }
+
+  .map-visual {
+    width: min(48vw, 38rem);
+    translate: 0 -2.5rem;
+  }
+
+  .slide-title {
+    font-size: var(--text-display);
+    font-weight: 300;
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    max-width: 18ch;
+  }
+
+  .dots {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(1.5rem, 4vh, 2.5rem);
+    translate: -50% 0;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    z-index: 2;
+  }
+
+  /* Bare tall chevrons, centered on the hero's edges */
+  .arrow {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 8rem;
+    background: none;
+    border: 0;
+    color: var(--paper);
+    opacity: 0.65;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .arrow-prev {
+    left: clamp(0.5rem, 1.5vw, 1.75rem);
+  }
+
+  .arrow-next {
+    right: clamp(0.5rem, 1.5vw, 1.75rem);
+  }
+
+  .arrow:hover {
+    opacity: 1;
+  }
+
+  .dot {
+    width: 28px;
+    height: 3px;
+    border: 0;
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.35);
+    padding: 0;
+    cursor: pointer;
+    transition: background-color 250ms ease, width 250ms ease;
+  }
+
+  .dot:hover {
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .dot:focus-visible {
+    outline-offset: 6px;
+  }
+
+  .dot[aria-current="true"] {
+    width: 48px;
+    background: var(--ox-bright);
+  }
+
+  /* Each slide carries its own footage behind a dark, red-cast scrim —
+     the site is dark; oxblood appears as the asset color, not the field. */
+  .slide-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .slide-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(10, 10, 11, 0.85) 0%,
+      rgba(10, 10, 11, 0.35) 45%,
+      rgba(20, 4, 4, 0.3) 100%
+    );
+  }
+
+  /* Slide 3 carries the map: grade its plate deeper so the routes read */
+  .slide:nth-of-type(3) .slide-scrim {
+    background: linear-gradient(
+      to top,
+      rgba(10, 10, 11, 0.9) 0%,
+      rgba(10, 10, 11, 0.62) 45%,
+      rgba(20, 4, 4, 0.55) 100%
+    );
+  }
+
+  h1 {
+    font-size: var(--text-display);
+    font-weight: 300;
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    max-width: 13ch;
+  }
+
+  .hero-foot {
+    display: grid;
+    gap: 1.75rem;
+    max-width: 44rem;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    border-top: 1px solid rgba(163, 21, 21, 0.8);
+    padding-top: 1.5rem;
+  }
+
+  .slide .lede {
+    max-width: 48ch;
+  }
+
+  .lede {
+    max-width: 54ch;
+  }
+
+  .acts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  /* Solid ground behind actions so the globe's graticule never runs through them */
+  .hero .btn-ghost {
+    background: var(--ink);
+  }
+
+  /* Directory */
+  .directory {
+    padding-block: var(--sect);
+  }
+
+  /* Section heads: a chapter-scale step above the group heads below them,
+     opened with the heavy rule so each section announces itself. */
+  .directory .h2,
+  .cell .h2 {
+    font-size: clamp(2rem, 1.4rem + 2.8vw, 3.5rem);
+    letter-spacing: -0.025em;
+    border-top: 3px solid var(--ox-bright);
+    padding-top: 1.1rem;
+  }
+
+  .cell .h2 {
+    border-top-color: var(--ink);
+  }
+
+  .dir-lede {
+    max-width: 54ch;
+    margin-top: 0.9rem;
+  }
+
+  .dir-group {
+    margin-top: clamp(2.25rem, 4.5vw, 3.5rem);
+  }
+
+  .group-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    border-bottom: 3px solid var(--ox-bright);
+    padding-bottom: 0.9rem;
+  }
+
+  .group-head h3 {
+    font-size: var(--text-h2);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+  }
+
+  .group-head p {
+    font-size: var(--text-sm);
+  }
+
+  .dir-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .dir-all {
+    display: inline-block;
+    margin-top: 2rem;
+    font-weight: 400;
+    font-size: var(--text-lg);
+    text-decoration: none;
+  }
+
+  .dir-all:hover {
+    color: var(--soft);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* Duo */
+  .duo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cell {
+    padding: clamp(2.5rem, 5vw, 4rem) var(--gutter);
+  }
+
+  .cell + .cell {
+    border-left: 3px solid var(--ink);
+  }
+
+  .cell h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  .cell dl {
+    border-top: 1px solid var(--ink);
+  }
+
+  .cell dl div {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: 1rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .cell dt {
+    font-weight: 400;
+    font-size: var(--text-sm);
+  }
+
+  .cell dd {
+    color: var(--gray);
+    font-size: var(--text-sm);
+  }
+
+  .tbd {
+    font-size: 0.8125rem;
+    margin-top: 0.9rem;
+  }
+
+  .cell-copy {
+    max-width: 44ch;
+    margin-bottom: 1rem;
+  }
+
+  .cities {
+    font-weight: 450;
+    font-size: var(--text-sm);
+    line-height: 1.9;
+    max-width: 48ch;
+  }
+
+  .cities a {
+    color: var(--ox);
+    font-weight: 400;
+  }
+
+  .link {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-weight: 400;
+    text-decoration: none;
+    color: var(--ox);
+  }
+
+  .link:hover {
+    color: var(--ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide-video {
+      display: none;
+    }
+  }
+
+  @media (max-width: 980px) {
+    .arrow {
+      width: 2.5rem;
+    }
+
+    .arrow svg {
+      height: 40px;
+    }
+
+    .slide-grid {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+
+    /* Visuals ride above the text on small screens — big and full-strength */
+    .slide-visual {
+      order: -1;
+      justify-self: center;
+      width: min(72vw, 19rem);
+      margin-bottom: 0.75rem;
+      opacity: 1;
+    }
+
+    .globe-visual {
+      position: static;
+      translate: none;
+      pointer-events: none;
+    }
+
+    .map-visual {
+      width: min(94vw, 26rem);
+      translate: none;
+    }
+
+    .hero-foot {
+      grid-template-columns: 1fr;
+      align-items: start;
+      gap: 1.5rem;
+    }
+
+    .duo {
+      grid-template-columns: 1fr;
+    }
+
+    .cell + .cell {
+      border-left: 0;
+      border-top: 3px solid var(--ink);
+    }
+  }
+</style>

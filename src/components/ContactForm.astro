@@ -1,0 +1,303 @@
+---
+/*
+  Inquiry form, wired for Formspree — Chancery grammar (lives on white relief).
+  TODO: replace FORM_ID in the action URL with the real Formspree form ID
+  (or point the action at Basin). Fields per client brief.
+  Pills come from the canonical service IA; "Other / General" is the default
+  and ?service=<name> (sent by page CTAs) preselects a specific line.
+*/
+import { allServices } from "../data/services";
+
+const services = [...allServices.map((s) => s.name), "Other / General"];
+---
+
+<form class="inquiry" action="https://formspree.io/f/FORM_ID" method="POST">
+  <fieldset class="service-select">
+    <legend>Service required</legend>
+    <div class="pills">
+      {services.map((s) => (
+        <label class="pill">
+          <input type="radio" name="service" value={s} checked={s === "Other / General"} />
+          <span>{s}</span>
+        </label>
+      ))}
+    </div>
+  </fieldset>
+
+  <div class="grid">
+    <div class="field">
+      <label for="f-name">Name</label>
+      <input id="f-name" name="name" type="text" autocomplete="name" />
+    </div>
+    <div class="field">
+      <label for="f-email">Email <span class="req">required</span></label>
+      <input id="f-email" name="email" type="email" autocomplete="email" required />
+    </div>
+    <div class="field">
+      <label for="f-phone">Phone</label>
+      <input id="f-phone" name="phone" type="tel" autocomplete="tel" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="f-message">Message <span class="req">required</span></label>
+    <textarea
+      id="f-message"
+      name="message"
+      rows="6"
+      required
+      placeholder="Dates, itinerary, number of passengers, and any security considerations."></textarea>
+  </div>
+
+  <div class="submit-row">
+    <button class="btn btn-red" type="submit" data-track="contact-submit">
+      Send Inquiry
+    </button>
+    <p class="note">
+      Inquiries are handled discreetly. For immediate needs
+      call <a href="tel:+17032874227">+1 703-287-4227</a>, answered 24/7.
+    </p>
+  </div>
+
+  <p class="form-status" role="status" aria-live="polite" hidden></p>
+</form>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>(".inquiry");
+
+  // Preselect the service line named by ?service= (sent by page CTAs).
+  const wanted = new URLSearchParams(location.search).get("service");
+  if (wanted && form) {
+    const match = form.querySelector<HTMLInputElement>(
+      `input[name="service"][value="${CSS.escape(wanted)}"]`
+    );
+    if (match) match.checked = true;
+  }
+  const status = form?.querySelector<HTMLElement>(".form-status");
+  const submit = form?.querySelector<HTMLButtonElement>("button[type=submit]");
+
+  function show(kind: "ok" | "error", html: string) {
+    if (!status) return;
+    status.hidden = false;
+    status.classList.toggle("ok", kind === "ok");
+    status.innerHTML = html;
+  }
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Endpoint not yet configured — route the visitor to live channels
+    // instead of a dead request. Remove once the real form ID is set.
+    if (form.action.includes("FORM_ID")) {
+      show(
+        "error",
+        'Online inquiries are briefly unavailable. Please call <a href="tel:+17032874227">+1 703-287-4227</a>, message us on <a href="https://wa.me/17032874227" rel="noopener">WhatsApp</a>, or email <a href="mailto:info@dcvipconcierge.com">info@dcvipconcierge.com</a>. Answered 24/7.'
+      );
+      return;
+    }
+
+    if (submit) {
+      submit.disabled = true;
+      submit.textContent = "Sending…";
+    }
+    try {
+      const res = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      form.reset();
+      show(
+        "ok",
+        "Received. A coordinator will respond shortly."
+      );
+    } catch {
+      show(
+        "error",
+        'The inquiry could not be sent. Please call <a href="tel:+17032874227">+1 703-287-4227</a> or email <a href="mailto:info@dcvipconcierge.com">info@dcvipconcierge.com</a>. Answered 24/7.'
+      );
+    } finally {
+      if (submit) {
+        submit.disabled = false;
+        submit.textContent = "Send Inquiry";
+      }
+    }
+  });
+</script>
+
+<style>
+  .inquiry {
+    display: grid;
+    gap: 1.5rem;
+    color: var(--ink);
+  }
+
+  fieldset {
+    border: 0;
+    padding: 0;
+  }
+
+  legend {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 0.75rem;
+  }
+
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pill {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .pill input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  .pill span {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--line-paper);
+    font-size: var(--text-sm);
+    font-weight: 450;
+    color: var(--ink);
+    transition: border-color 140ms ease-out, background-color 140ms ease-out,
+      color 140ms ease-out;
+  }
+
+  .pill:hover span {
+    border-color: var(--ink);
+  }
+
+  .pill input:checked + span {
+    background: var(--ox);
+    border-color: var(--ox);
+    color: var(--paper);
+    font-weight: 500;
+  }
+
+  .pill input:focus-visible + span {
+    outline: 3px solid var(--ox);
+    outline-offset: 3px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .field {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  label {
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+
+  .req {
+    font-weight: 450;
+    font-size: var(--text-xs);
+    color: var(--ox);
+    margin-left: 0.25rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  textarea {
+    font: inherit;
+    font-size: var(--text-base);
+    padding: 0.7rem 0.9rem;
+    border: 2px solid var(--line-paper);
+    border-radius: 0;
+    background: var(--paper);
+    color: var(--ink);
+    width: 100%;
+  }
+
+  input:hover,
+  textarea:hover {
+    border-color: var(--ink);
+  }
+
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 0;
+    border-color: var(--ox);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+
+  ::placeholder {
+    color: var(--gray);
+    opacity: 1;
+  }
+
+  .submit-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .note {
+    font-size: var(--text-sm);
+    color: var(--gray);
+    max-width: 40ch;
+  }
+
+  .note a {
+    color: var(--ox);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .note a:hover {
+    text-decoration: underline;
+  }
+
+  .form-status {
+    border: 2px solid var(--ox);
+    background: #fdf6f6;
+    padding: 1rem 1.25rem;
+    font-size: var(--text-sm);
+  }
+
+  .form-status.ok {
+    border-color: var(--ink);
+    background: var(--paper-dim);
+  }
+
+  .form-status a {
+    color: var(--ox);
+    font-weight: 500;
+  }
+
+  button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+
+  @media (max-width: 720px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

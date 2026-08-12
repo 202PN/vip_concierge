@@ -1,0 +1,89 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import CTABlock from "../components/CTABlock.astro";
+
+const services = [
+  {
+    title: "Private jet charter",
+    body: "Aircraft, positioning, and schedule arranged to the mission, with armored or executive ground transportation waiting at both ends.",
+  },
+  {
+    title: "Commercial travel management",
+    body: "Flights, connections, and contingencies managed by a coordinator who answers when plans change, not a portal.",
+  },
+  {
+    title: "Multi-city logistics",
+    body: "Delegation visits and executive tours sequenced across cities: aviation, ground, and accommodation on one schedule.",
+  },
+  {
+    title: "Ground coordination anywhere",
+    body: "Vetted transportation in all 50 states, held to the same standard in Washington or a city we're entering for the first time.",
+  },
+];
+---
+
+<BaseLayout
+  title="Travel Arrangement & Private Jet Charter | VIP Concierge"
+  description="End-to-end travel arrangement for government and corporate clients: private jet charter, commercial travel management, and multi-city delegation logistics coordinated with ground transportation, 24/7."
+>
+  <PageIntro
+    service="Travel Arrangement"
+    title="Travel Arrangement"
+    lede="Aviation, ground, and accommodation on one master schedule, from a single charter to a multi-city delegation tour. We plan the itinerary and stay responsible for it until the final leg lands."
+  />
+
+  <section class="services-list field-paper">
+    <div class="wrap">
+      <dl class="list">
+        {services.map((s) => (
+          <div class="row">
+            <dt>{s.title}</dt>
+            <dd class="on-paper-gray">{s.body}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <CTABlock
+    service="Travel Arrangement"
+    heading="Plan an itinerary."
+    body="Send the outline: cities, dates, party size. We'll return a plan covering aviation, ground, and accommodation."
+  />
+</BaseLayout>
+
+<style>
+  .services-list {
+    padding-block: var(--sect);
+  }
+
+  .list {
+    border-top: 3px solid var(--ink);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: minmax(10rem, 16rem) 1fr;
+    gap: 2rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .row dt {
+    font-size: var(--text-h3);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .row dd {
+    max-width: 62ch;
+  }
+
+  @media (max-width: 860px) {
+    .row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+</style>

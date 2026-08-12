@@ -1,0 +1,74 @@
+---
+/*
+  Wayfinding directory row — Chancery grammar. Designed for the deep-oxblood
+  services directory; heavy white group rule sits above the first row.
+*/
+interface Props {
+  title: string;
+  href: string;
+  summary: string;
+}
+
+const { title, href, summary } = Astro.props;
+---
+
+<li class="dir-row">
+  <a href={href}>
+    <span class="dir-name">{title}</span>
+    <span class="dir-note">{summary}</span>
+    <span class="dir-arrow" aria-hidden="true">→</span>
+  </a>
+</li>
+
+<style>
+  .dir-row a {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto;
+    gap: 2rem;
+    align-items: center;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--line-onink);
+    text-decoration: none;
+    transition: translate 160ms ease-out;
+  }
+
+  .dir-row a:hover {
+    translate: 0.75rem 0;
+  }
+
+  .dir-name {
+    font-size: clamp(1.25rem, 1rem + 1.2vw, 1.75rem);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .dir-row a:hover .dir-name {
+    color: var(--soft);
+  }
+
+  .dir-note {
+    color: var(--soft);
+    font-size: var(--text-sm);
+  }
+
+  .dir-arrow {
+    font-size: 1.5rem;
+    font-weight: 300;
+  }
+
+  @media (max-width: 720px) {
+    .dir-row a {
+      grid-template-columns: 1fr auto;
+      gap: 0.3rem 1.25rem;
+    }
+
+    .dir-note {
+      grid-column: 1;
+    }
+
+    .dir-arrow {
+      grid-row: 1;
+      grid-column: 2;
+    }
+  }
+</style>

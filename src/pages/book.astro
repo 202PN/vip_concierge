@@ -1,0 +1,173 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+
+/*
+  LIMO ANYWHERE ORES — live. The iframe below embeds the company's ORES v4
+  reservation form (https://book.mylimobiz.com/v4/vipconcierge); ORES appends
+  its own session token on load. Clearing ORES_ALIAS restores the
+  call-us placeholder.
+
+  GOOGLE ADS NOTES (full walkthrough in GOOGLE-ADS-SETUP.md)
+  - This page pushes `book_page_view` (placeholder) or `ores_widget_view`
+    (live widget) into dataLayer; every Book Now button site-wide already
+    pushes `cta_click` with a `cta` label. Map these to conversions in GTM.
+  - The completed-reservation "thank you" happens INSIDE the Limo Anywhere
+    iframe (book.mylimobiz.com), so the true booking conversion must be
+    configured in Limo Anywhere itself: ORES v4 settings support Google
+    Analytics / Ads tracking IDs and cross-domain measurement. Add the
+    client's GA4/Ads IDs there so bookings attribute back to the ad click.
+*/
+const ORES_ALIAS = "vipconcierge";
+---
+
+<BaseLayout
+  title="Book Now — Online Reservations | VIP Concierge"
+  description="Book executive transportation with VIP Concierge online, or call +1 703-287-4227 for 24/7 dispatch. Armored and specialized requirements begin with a consultation."
+>
+  <PageIntro
+    title="Book Now"
+    lede="Reserve executive transportation online below. Armored movements, delegations, and specialized requirements start with a consultation: a conversation, not a form."
+    showActions={false}
+  />
+
+  <section class="booking field-paper">
+    {
+      ORES_ALIAS ? (
+        <iframe
+          class="ores-full"
+          src={`https://book.mylimobiz.com/v4/${ORES_ALIAS}`}
+          title="Online reservations — VIP Concierge booking"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      ) : (
+        <div class="wrap">
+          <div class="ores-placeholder" id="ores">
+            <p class="ores-label">Online reservations</p>
+            <p>
+              The online booking system is being connected.
+              <span class="on-paper-gray">[Awaiting ORES key — see comment in this file]</span>
+            </p>
+            <p class="ores-alt on-paper-gray">
+              Until then, reservations are taken 24/7 at
+              <a href="tel:+17032874227">+1 703-287-4227</a> or by
+              <a href="https://wa.me/17032874227" rel="noopener">WhatsApp</a>.
+            </p>
+          </div>
+        </div>
+      )
+    }
+
+    <aside class="wrap armored-note">
+      <h2>Booking an armored movement?</h2>
+      <p class="on-paper-gray">
+        Armored and security-sensitive movements aren't booked online. A
+        senior coordinator plans them with you directly.
+      </p>
+      <a class="btn btn-red" href="/contact" data-track="book-consult">Request a Consultation</a>
+    </aside>
+  </section>
+
+  <script is:inline define:vars={{ ORES_ALIAS }}>
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: ORES_ALIAS ? "ores_widget_view" : "book_page_view",
+      booking_live: Boolean(ORES_ALIAS),
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  .booking {
+    padding-block: 0 var(--sect);
+  }
+
+  /* The reservation form owns the page — edge to edge, a full viewport tall
+     (minus the fixed header) so the widget never feels boxed in. */
+  .ores-full {
+    display: block;
+    width: 100%;
+    height: calc(100vh - var(--header-h));
+    min-height: 52rem;
+    border: 0;
+    background: var(--paper);
+  }
+
+  .ores-placeholder {
+    border: 2px solid var(--ink);
+    padding: clamp(2rem, 5vw, 3.5rem);
+    min-height: 24rem;
+    display: grid;
+    align-content: center;
+    gap: 0.75rem;
+  }
+
+  .ores-label {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ox);
+  }
+
+  .ores-placeholder p {
+    max-width: 48ch;
+    font-weight: 450;
+  }
+
+  .ores-alt {
+    font-size: var(--text-sm);
+    font-weight: 400 !important;
+  }
+
+  .ores-alt a {
+    color: var(--ox);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .ores-alt a:hover {
+    text-decoration: underline;
+  }
+
+  .armored-note {
+    margin-top: var(--sect);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem 3rem;
+    align-items: center;
+    border-top: 2px solid var(--ink);
+    padding-top: 2rem;
+  }
+
+  .armored-note h2 {
+    grid-column: 1;
+    font-size: var(--text-h3);
+    font-weight: 400;
+  }
+
+  .armored-note p {
+    grid-column: 1;
+    font-size: var(--text-sm);
+    max-width: 64ch;
+  }
+
+  .armored-note .btn {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  @media (max-width: 720px) {
+    .armored-note {
+      grid-template-columns: 1fr;
+    }
+
+    .armored-note .btn {
+      grid-column: 1;
+      grid-row: auto;
+      justify-self: start;
+      margin-top: 0.75rem;
+    }
+  }
+</style>

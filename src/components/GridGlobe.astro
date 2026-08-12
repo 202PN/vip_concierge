@@ -1,0 +1,64 @@
+---
+/*
+  Earth graticule — a grid map of the globe drawn in the logo's own idiom,
+  with the seal at its center. Hero mark of the Chancery world.
+*/
+import Seal from "./Seal.astro";
+
+const R = 150;
+const deg = (d: number) => (d * Math.PI) / 180;
+
+/* meridians: ellipses whose rx follows the projected longitude circle */
+const meridians = [15, 30, 45, 60, 75].map((t) => R * Math.sin(deg(t)));
+
+/* parallels: chord width + gentle bow, in the logo globe's drawing style */
+const parallels = [15, 30, 45, 60, 75].flatMap((p) => {
+  const y = R * Math.sin(deg(p));
+  const w = R * Math.cos(deg(p));
+  return [
+    { y, w, c: y * 1.14 },
+    { y: -y, w, c: -y * 1.14 },
+  ];
+});
+---
+
+<div class="grid-globe" aria-hidden="true">
+  <svg viewBox="-170 -170 340 340" fill="none">
+    <g stroke="currentColor">
+      <circle cx="0" cy="0" r={R} stroke-width="1.75" opacity="0.85"></circle>
+      <circle cx="0" cy="0" r={R + 14} stroke-width="0.5" opacity="0.35" stroke-dasharray="1 5"></circle>
+      <!-- meridians -->
+      <line x1="0" y1={-R} x2="0" y2={R} stroke-width="1" opacity="0.55"></line>
+      {meridians.map((rx) => (
+        <ellipse cx="0" cy="0" rx={rx} ry={R} stroke-width="0.75" opacity="0.42"></ellipse>
+      ))}
+      <!-- equator + parallels -->
+      <line x1={-R} y1="0" x2={R} y2="0" stroke-width="1" opacity="0.55"></line>
+      {parallels.map((p) => (
+        <path d={`M ${-p.w} ${p.y} Q 0 ${p.c} ${p.w} ${p.y}`} stroke-width="0.75" opacity="0.42"></path>
+      ))}
+    </g>
+  </svg>
+  <Seal size={132} variant="mono" class="globe-seal" />
+</div>
+
+<style>
+  .grid-globe {
+    position: relative;
+    display: grid;
+    place-items: center;
+    color: var(--ox-bright);
+  }
+
+  .grid-globe svg {
+    width: 100%;
+    height: auto;
+  }
+
+  :global(.globe-seal) {
+    position: absolute;
+    color: var(--paper);
+    width: 38%;
+    height: auto;
+  }
+</style>

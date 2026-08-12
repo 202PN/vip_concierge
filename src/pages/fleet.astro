@@ -1,0 +1,158 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import FleetCard from "../components/FleetCard.astro";
+import CTABlock from "../components/CTABlock.astro";
+import escaladeFront from "../assets/escalade.png";
+import s580Front from "../assets/s580.png";
+import sprinterFront from "../assets/sprinter.png";
+import siennaFront from "../assets/sienna.png";
+---
+
+<BaseLayout
+  title="Fleet — Armored, Executive & Group Vehicles | VIP Concierge"
+  description="The VIP Concierge fleet by tier: Level 6 armored Escalade and Maybach, executive Mercedes S580 and Escalade, and group vehicles including Sprinter, Sienna, party bus, and coach bus."
+>
+  <PageIntro
+    title="The Fleet"
+    lede="Armored, executive, and group: three tiers matched to the mission. Every vehicle is late-model, immaculately kept, and professionally chauffeured."
+    showActions={false}
+  />
+
+  <section class="tiers field-paper">
+    <div class="wrap">
+      <div class="tier">
+        <div class="tier-head">
+          <h2 class="h2">Armored</h2>
+          <p class="on-paper-gray">Level 6 ballistic protection, certified executive-security chauffeurs only.</p>
+        </div>
+        <div class="grid two">
+          <FleetCard
+            showTier={false}
+            name="Bulletproof Escalade"
+            tier="Armored"
+            capacity="Up to 6"
+            description="The armored workhorse of the capital region: command presence, delegation-appropriate space, and Level 6 protection behind factory bodywork."
+          />
+          <FleetCard
+            showTier={false}
+            name="Bulletproof Maybach"
+            tier="Armored"
+            capacity="Up to 3"
+            description="Head-of-state comfort under Level 6 armor. For principals whose protection must be as uncompromising as their schedule."
+          />
+        </div>
+      </div>
+
+      <div class="tier">
+        <div class="tier-head">
+          <h2 class="h2">Executive</h2>
+          <p class="on-paper-gray">The executive standard: quiet, composed, appropriate at any embassy gate, boardroom, or terminal.</p>
+        </div>
+        <div class="grid two">
+          <FleetCard
+            showTier={false}
+            name="Mercedes S580"
+            tier="Executive"
+            capacity="Up to 3"
+            image={s580Front}
+            description="The definitive executive saloon: the vehicle boards, banks, and missions expect at the curb."
+          />
+          <FleetCard
+            showTier={false}
+            name="Escalade"
+            tier="Executive"
+            capacity="Up to 6"
+            image={escaladeFront}
+            description="Executive presence with working room. For teams, security details, and principals who travel with more than a briefcase."
+          />
+        </div>
+      </div>
+
+      <div class="tier">
+        <div class="tier-head">
+          <h2 class="h2">Group &amp; Delegation</h2>
+          <p class="on-paper-gray">Group-scale capacity without splitting the party: delegations, staff, and event groups on one schedule.</p>
+        </div>
+        <div class="grid two group-grid">
+          <FleetCard
+            showTier={false}
+            name="Mercedes Sprinter"
+            tier="Group & Delegation"
+            capacity="Up to 14"
+            image={sprinterFront}
+            description="The delegation shuttle: executive seating and standing room, sized for advance teams, press pools, and staff movements."
+          />
+          <FleetCard
+            showTier={false}
+            name="Toyota Sienna"
+            tier="Group & Delegation"
+            capacity="Up to 7"
+            image={siennaFront}
+            description="Discreet multi-passenger capability for staff transfers and low-profile movements where an SUV would draw attention."
+          />
+          <FleetCard
+            showTier={false}
+            name="Party Bus"
+            tier="Group & Delegation"
+            capacity="Up to 30"
+            description="A social cabin at group scale, for celebrations, corporate events, and evenings where the ride is part of the occasion."
+          />
+          <FleetCard
+            showTier={false}
+            name="Coach Bus"
+            tier="Group & Delegation"
+            capacity="Up to 55"
+            description="Full-delegation capacity for summits, conferences, and official visits. One vehicle, one manifest, one schedule."
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTABlock
+    heading="Match a vehicle to the mission."
+    body="Tell us the passengers, luggage, and threat profile, and we'll recommend the tier and the vehicle. Photos of armored and group vehicles on request."
+  />
+</BaseLayout>
+
+<style>
+  .tiers {
+    padding-block: var(--sect);
+  }
+
+  .tier + .tier {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    border-top: 3px solid var(--ink);
+    padding-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .tier-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .tier-head p {
+    font-size: var(--text-sm);
+    max-width: 48ch;
+  }
+
+  .grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .grid.two {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 720px) {
+    .grid.two {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

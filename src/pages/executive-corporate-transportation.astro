@@ -1,0 +1,169 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import FleetCard from "../components/FleetCard.astro";
+import escaladeFront from "../assets/escalade.png";
+import s580Front from "../assets/s580.png";
+import sprinterFront from "../assets/sprinter.png";
+import siennaFront from "../assets/sienna.png";
+import CTABlock from "../components/CTABlock.astro";
+
+const programs = [
+  {
+    title: "Airport transfers",
+    body: "We track your flight and position the chauffeur before the doors open, with a gate or curb meet at DCA, IAD, BWI, and private terminals.",
+  },
+  {
+    title: "Roadshows & multi-stop days",
+    body: "One vehicle, one chauffeur, and a coordinator re-sequencing stops as the day changes. Built for schedules that run to the minute.",
+  },
+  {
+    title: "Group & event transportation",
+    body: "Move the whole party together in a Sprinter, Sienna, party bus, or coach. One manifest, one schedule, professional chauffeurs throughout.",
+  },
+  {
+    title: "As-directed service",
+    body: "A vehicle and chauffeur at your disposal all day, for schedules that keep changing.",
+  },
+  {
+    title: "Corporate accounts",
+    body: "Recurring needs? Set up a standing arrangement: consistent chauffeurs, direct booking, consolidated billing. [Account terms: TBD]",
+  },
+];
+---
+
+<BaseLayout
+  title="Executive & Group Transportation | VIP Concierge"
+  description="Chauffeured transportation in Washington, DC and nationwide: Mercedes S580, Escalade, Mercedes Sprinter, Toyota Sienna, party bus, and coach bus. Airport transfers, roadshows, group and event movements, 24/7."
+>
+  <PageIntro
+    service={"Executive & Group Transportation"}
+    title="Executive & Group Transportation"
+    lede="Chauffeured transportation at every scale, from one executive in a Mercedes S580 to a full delegation on a coach. Immaculate vehicles, professional chauffeurs, schedules that hold."
+  />
+
+  <section class="programs field-paper">
+    <div class="wrap">
+      <h2 class="h2">Programs</h2>
+      <dl class="list">
+        {programs.map((p) => (
+          <div class="row">
+            <dt>{p.title}</dt>
+            <dd class="on-paper-gray">{p.body}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <hr class="rule-heavy spacer" aria-hidden="true" />
+      <h2 class="h2">The vehicles</h2>
+      <p class="sec-lede on-paper-gray">
+        Late-model vehicles in showroom condition, matched to your party,
+        luggage, and occasion.
+      </p>
+      <div class="vehicle-grid">
+        <FleetCard
+          name="Mercedes S580"
+          tier="Executive"
+          capacity="Up to 3"
+          image={s580Front}
+          description="The definitive executive saloon: quiet, composed, and appropriate at any embassy gate, boardroom, or terminal in the country."
+        />
+        <FleetCard
+          name="Escalade"
+          tier="Executive"
+          capacity="Up to 6"
+          image={escaladeFront}
+          description="Executive presence with working room. The choice for teams, security details, and principals who travel with more than a briefcase."
+        />
+        <FleetCard
+          name="Mercedes Sprinter"
+          tier="Group"
+          capacity="Up to 14"
+          image={sprinterFront}
+          description="The delegation shuttle: executive seating and standing room for advance teams, press pools, and staff movements."
+        />
+        <FleetCard
+          name="Toyota Sienna"
+          tier="Group"
+          capacity="Up to 7"
+          image={siennaFront}
+          description="Discreet multi-passenger capability for staff transfers and low-profile movements where an SUV would draw attention."
+        />
+        <FleetCard
+          name="Party Bus"
+          tier="Group & Events"
+          capacity="Up to 30"
+          description="A social cabin at group scale, for celebrations, corporate events, and evenings where the ride is part of the occasion."
+        />
+        <FleetCard
+          name="Coach Bus"
+          tier="Group"
+          capacity="Up to 55"
+          description="Full-delegation capacity for summits, conferences, and official visits. One vehicle, one manifest, one schedule."
+        />
+      </div>
+    </div>
+  </section>
+
+  <CTABlock variant="book" heading="Put a schedule on the road." service={"Executive & Group Transportation"} />
+</BaseLayout>
+
+<style>
+  .programs {
+    padding-block: var(--sect);
+  }
+
+  h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  .list {
+    border-top: 3px solid var(--ink);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: minmax(10rem, 16rem) 1fr;
+    gap: 2rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .row dt {
+    font-size: var(--text-h3);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .row dd {
+    max-width: 62ch;
+  }
+
+  .spacer {
+    margin-block: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .sec-lede {
+    max-width: 56ch;
+    margin-bottom: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+
+  .vehicle-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 960px) {
+    .vehicle-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+</style>

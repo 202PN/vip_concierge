@@ -1,0 +1,151 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import CTABlock from "../components/CTABlock.astro";
+
+const commitments = [
+  {
+    title: "Discretion",
+    body: "We never discuss, market, or disclose client identities, itineraries, or movements. The clients who need us most are the ones you'll never hear about from us.",
+  },
+  {
+    title: "Capability",
+    body: "Level 6 armored vehicles, certified executive-security chauffeurs, and an operations desk experienced in embassy, delegation, and government movements. [Credentials and licensing details: TBD]",
+  },
+  {
+    title: "Reliability",
+    body: "A live coordinator answers 24/7. Schedules are confirmed, vehicles arrive early, and changes are handled without drama.",
+  },
+];
+---
+
+<BaseLayout
+  title="About — An Institutional Logistics & Security Partner | VIP Concierge"
+  description="VIP Concierge is a McLean, Virginia transportation and concierge company serving government, corporate, and diplomatic clients with armored fleets, certified security chauffeurs, and 24/7 operations."
+>
+  <PageIntro
+    title="An institutional partner, not a car service"
+    lede="We serve governments, corporations, and diplomatic missions whose transportation carries institutional weight, in Washington and beyond."
+    showActions={false}
+  />
+
+  <section class="philosophy field-paper">
+    <div class="wrap philosophy-grid">
+      <div class="copy">
+        <h2 class="h2">Our philosophy</h2>
+        <p class="lead-p">
+          The measure of this work is what does not happen. The motorcade that
+          is never late. The principal who is never exposed. The itinerary that
+          never leaks. Every engagement is built backward from that standard:
+          assessment, plan, vehicle.
+        </p>
+        <p class="on-paper-gray">
+          We work from McLean, Virginia, minutes from Washington's
+          institutions, handling everything from armored delegation visits
+          to documents that must clear an embassy.
+        </p>
+        <p class="tbd on-paper-gray">[Founding year and company history: TBD]</p>
+      </div>
+      <div class="emblem" aria-hidden="true">
+        <img class="about-seal" src="/vip_red.png" alt="" width="200" height="200" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <section class="commitments field-deep">
+    <div class="wrap">
+      <h2 class="h2">What we hold ourselves to</h2>
+      <dl class="commit-list">
+        {commitments.map((c) => (
+          <div class="commit-row">
+            <dt>{c.title}</dt>
+            <dd class="on-red-soft">{c.body}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <CTABlock />
+</BaseLayout>
+
+<style>
+  .philosophy {
+    padding-block: var(--sect);
+  }
+
+  .philosophy-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+    gap: 3rem;
+    align-items: center;
+  }
+
+  h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  .lead-p {
+    font-size: var(--text-lg);
+    font-weight: 450;
+    max-width: 58ch;
+    margin-bottom: 1rem;
+  }
+
+  .copy p {
+    max-width: 60ch;
+  }
+
+  .tbd {
+    font-size: var(--text-sm);
+    margin-top: 1rem;
+  }
+
+  .emblem {
+    display: grid;
+    place-items: center;
+  }
+
+  .commitments {
+    padding-block: var(--sect);
+  }
+
+  .commit-list {
+    border-top: 3px solid var(--ox-bright);
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .commit-row {
+    display: grid;
+    grid-template-columns: minmax(10rem, 16rem) 1fr;
+    gap: 2rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--line-onink);
+  }
+
+  .commit-row dt {
+    font-size: var(--text-h3);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .commit-row dd {
+    max-width: 62ch;
+  }
+
+  @media (max-width: 860px) {
+    .philosophy-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .emblem {
+      order: -1;
+      justify-items: start;
+    }
+
+    .commit-row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+</style>

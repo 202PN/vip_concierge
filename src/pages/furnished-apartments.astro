@@ -1,0 +1,97 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import CTABlock from "../components/CTABlock.astro";
+
+const points = [
+  {
+    title: "Delegation housing",
+    body: "Multiple units in one building or district, so the delegation stays together: principals, staff, and security within reach of each other and the mission.",
+  },
+  {
+    title: "Extended official stays",
+    body: "Move-in-ready apartments for stays of weeks or months. Housekeeping, utilities, and support are set up before you arrive.",
+  },
+  {
+    title: "Relocations",
+    body: "A settled address from day one while you find something permanent, with no pressure on the search.",
+  },
+  {
+    title: "Coordinated with transportation",
+    body: "One point of contact covers housing and transportation, so a schedule change updates both.",
+  },
+];
+---
+
+<BaseLayout
+  title="Furnished Apartments — Delegation & Extended-Stay Housing | VIP Concierge"
+  description="Fully furnished apartments for delegations, relocations, and extended official stays in the Washington, DC region, arranged and managed under one point of contact with transportation and logistics."
+>
+  <PageIntro
+    service="Furnished Apartments"
+    title="Furnished Apartments"
+    lede="Fully furnished apartments for delegations, relocations, and extended official stays, discreetly managed and coordinated with your transportation."
+  />
+
+  <section class="points field-paper">
+    <div class="wrap">
+      <dl class="list">
+        {points.map((p) => (
+          <div class="row">
+            <dt>{p.title}</dt>
+            <dd class="on-paper-gray">{p.body}</dd>
+          </div>
+        ))}
+      </dl>
+      <div class="photo-tbd wide" role="img" aria-label="Apartment photography pending">
+        Property photography pending [TBD]
+      </div>
+    </div>
+  </section>
+
+  <CTABlock
+    service="Furnished Apartments"
+    heading="Arrange accommodation."
+    body="Tell us the party size, dates, and district. We'll send available options and hold them while you decide."
+  />
+</BaseLayout>
+
+<style>
+  .points {
+    padding-block: var(--sect);
+  }
+
+  .list {
+    border-top: 3px solid var(--ink);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: minmax(10rem, 16rem) 1fr;
+    gap: 2rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .row dt {
+    font-size: var(--text-h3);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .row dd {
+    max-width: 62ch;
+  }
+
+  .wide {
+    margin-top: clamp(2rem, 4vw, 3rem);
+    min-height: 20rem;
+  }
+
+  @media (max-width: 860px) {
+    .row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+</style>

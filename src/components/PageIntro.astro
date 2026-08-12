@@ -1,0 +1,70 @@
+---
+/*
+  Sub-page opening on the oxblood ground: massive Franklin headline,
+  heavy white rule, lede, optional actions.
+*/
+interface Props {
+  title: string;
+  lede: string;
+  showActions?: boolean;
+  /* Canonical service name — preselects the contact form's service pill. */
+  service?: string;
+}
+
+const { title, lede, showActions = true, service } = Astro.props;
+const contactHref = service ? `/contact?service=${encodeURIComponent(service)}` : "/contact";
+---
+
+<section class="intro">
+  <div class="wrap">
+    <h1>{title}</h1>
+    <div class="foot">
+      <p class="lede on-red-soft">{lede}</p>
+      {
+        showActions && (
+          <div class="acts">
+            <a class="btn btn-light" href={contactHref} data-track="intro-consult">Request a Consultation</a>
+            <a class="btn btn-ghost" href="/book" data-track="intro-book">Book Now</a>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .intro {
+    padding-block: clamp(3rem, 6vw, 5.5rem) clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 1.2rem + 5.2vw, 5rem);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    max-width: 18ch;
+  }
+
+  .foot {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) auto;
+    gap: 2.5rem;
+    align-items: end;
+    margin-top: clamp(1.75rem, 3.5vw, 3rem);
+    border-top: 3px solid var(--ox-bright);
+    padding-top: 1.75rem;
+  }
+
+  .acts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  @media (max-width: 900px) {
+    .foot {
+      grid-template-columns: 1fr;
+      align-items: start;
+      gap: 1.5rem;
+    }
+  }
+</style>

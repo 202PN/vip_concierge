@@ -1,0 +1,110 @@
+---
+import "@fontsource-variable/libre-franklin";
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+
+// Google Tag Manager — paste the container ID (e.g. "GTM-ABC1234") to go
+// live. Empty string = no tracking script loads. See GOOGLE-ADS-SETUP.md.
+const GTM_ID = "";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="generator" content={Astro.generator} />
+    <!--
+      TODO before launch:
+      1. Google Search Console — uncomment with the real token:
+         <meta name="google-site-verification" content="..." />
+      2. og:image — add a 1200x630 social card once brand photography exists:
+         <meta property="og:image" content="https://dcvipconcierge.com/og.jpg" />
+    -->
+    <link rel="canonical" href={new URL(Astro.url.pathname, "https://dcvipconcierge.com")} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={new URL(Astro.url.pathname, "https://dcvipconcierge.com")} />
+    <meta property="og:site_name" content="VIP Concierge" />
+    {
+      GTM_ID && (
+        <script
+          is:inline
+          set:html={`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`}
+        />
+      )
+    }
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      document.addEventListener("click", function (e) {
+        var el = e.target.closest("[data-track]");
+        if (el) window.dataLayer.push({ event: "cta_click", cta: el.getAttribute("data-track") });
+        if (e.target.closest('a[href^="tel:"]')) window.dataLayer.push({ event: "phone_click" });
+        if (e.target.closest('a[href*="wa.me/"]')) window.dataLayer.push({ event: "whatsapp_click" });
+      });
+    </script>
+  </head>
+  <body>
+    {
+      GTM_ID && (
+        <noscript
+          set:html={`<iframe src="https://www.googletagmanager.com/ns.html?id=${GTM_ID}" height="0" width="0" style="display:none;visibility:hidden"></iframe>`}
+        />
+      )
+    }
+    <!--
+      DESIGN DIRECTION ("Chancery", dark rendition)
+      The graphic authority of a chancery, after dark. Ink is the ground;
+      oxblood is the asset color: it marks rules, actions, the capability
+      band, and the seal's orbit, never the whole page. Near-black ink
+      ground (#0d0d0e) with dark panels, an oxblood capability band and CTA
+      close, white relief plates for dense fact content; Libre Franklin
+      only, in a light register (300 display, 400-500 emphasis); oxblood
+      rules; wayfinding directory rows; full-viewport cinematic film hero
+      with copy resting low. Formal institutional register; no slogans.
+    -->
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  /* Header is fixed; content clears it. The home hero pulls itself back up
+     under the transparent bar so the film runs behind it. */
+  main {
+    padding-top: var(--header-h);
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: var(--gutter);
+    z-index: 100;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.6rem 1.2rem;
+    text-decoration: none;
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+
+  .skip-link:focus-visible {
+    top: 0.5rem;
+  }
+</style>

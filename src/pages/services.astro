@@ -1,0 +1,72 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import ServiceCard from "../components/ServiceCard.astro";
+import CTABlock from "../components/CTABlock.astro";
+import { serviceGroups } from "../data/services";
+---
+
+<BaseLayout
+  title="Services — Transportation & Concierge | VIP Concierge"
+  description="Secure transportation and concierge services for government, corporate, and diplomatic clients: armored and executive transportation, furnished apartments, travel arrangement with private jet charter, and document authentication."
+>
+  <PageIntro
+    title="Services"
+    lede="Armored and executive transportation, plus the concierge services institutional visits require: accommodation, travel arrangement, and document authentication. One professional standard, coordinators on call 24/7."
+    showActions={false}
+  />
+
+  <section class="directory field-deep">
+    <div class="wrap">
+      {serviceGroups.map((g) => (
+        <div class="dir-group">
+          <div class="group-head">
+            <h2>{g.title}</h2>
+            <p class="on-red-soft">{g.blurb}</p>
+          </div>
+          <ul class="dir-list">
+            {g.items.map((s) => (
+              <ServiceCard title={s.name} href={s.href} summary={s.note} />
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <CTABlock />
+</BaseLayout>
+
+<style>
+  .directory {
+    padding-block: var(--sect);
+  }
+
+  .dir-group + .dir-group {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .group-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    border-bottom: 3px solid var(--ox-bright);
+    padding-bottom: 0.9rem;
+  }
+
+  .group-head h2 {
+    font-size: var(--text-h2);
+    letter-spacing: -0.02em;
+  }
+
+  .group-head p {
+    font-size: var(--text-sm);
+  }
+
+  .dir-list {
+    list-style: none;
+    padding: 0;
+  }
+</style>

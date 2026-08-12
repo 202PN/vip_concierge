@@ -1,0 +1,145 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import CTABlock from "../components/CTABlock.astro";
+
+const homeRegion = [
+  { city: "Washington DC", note: "District of Columbia" },
+  { city: "Northern Virginia", note: "Virginia, headquarters in McLean" },
+  { city: "Baltimore", note: "Maryland" },
+];
+
+const national = [
+  { city: "New York", note: "New York" },
+  { city: "Boston", note: "Massachusetts" },
+  { city: "Miami", note: "Florida" },
+  { city: "Palm Beach", note: "Florida" },
+  { city: "Los Angeles", note: "California" },
+  { city: "Cleveland", note: "Ohio" },
+  { city: "Cincinnati", note: "Ohio" },
+];
+---
+
+<BaseLayout
+  title="Service Areas — DC, Virginia, Maryland & Nationwide | VIP Concierge"
+  description="VIP Concierge is headquartered in McLean, Virginia, serving the DC/VA/MD capital region and major U.S. cities regularly, with service anywhere in the 50 states arranged on request."
+>
+  <PageIntro
+    title="Service Areas"
+    lede="Three tiers of coverage: the capital region we call home, the cities we serve regularly, and anywhere in the 50 states on request."
+    showActions={false}
+  />
+
+  <section class="areas field-paper">
+    <div class="wrap">
+      <div class="tier-head">
+        <h2 class="h2">The capital region</h2>
+        <p class="tier-note on-paper-gray">Home base: headquartered in McLean, Virginia, minutes from Washington's institutions.</p>
+      </div>
+      <dl class="area-list">
+        {homeRegion.map((a) => (
+          <div class="area-row">
+            <dt>{a.city}</dt>
+            <dd class="on-paper-gray">{a.note}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div class="tier-head second">
+        <h2 class="h2">Cities we regularly serve</h2>
+        <p class="tier-note on-paper-gray">Established service beyond the capital region.</p>
+      </div>
+      <dl class="area-list">
+        {national.map((a) => (
+          <div class="area-row">
+            <dt>{a.city}</dt>
+            <dd class="on-paper-gray">{a.note}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div class="anywhere">
+        <h2>Anywhere in the 50 states</h2>
+        <p class="on-paper-gray">
+          Don't see your city? Tell us where and when, and we'll confirm
+          arrangements: vetted vehicles and chauffeurs held to our standard,
+          wherever the itinerary leads.
+        </p>
+        <a class="btn btn-red" href="/contact" data-track="areas-inquire">Inquire About a City</a>
+      </div>
+    </div>
+  </section>
+
+  <CTABlock variant="book" />
+</BaseLayout>
+
+<style>
+  .areas {
+    padding-block: var(--sect);
+  }
+
+  .tier-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+
+  .tier-head.second {
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .tier-note {
+    font-size: var(--text-sm);
+    max-width: 52ch;
+  }
+
+  .area-list {
+    border-top: 3px solid var(--ink);
+  }
+
+  .area-row {
+    display: grid;
+    grid-template-columns: minmax(10rem, 18rem) 1fr;
+    gap: 2rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .area-row dt {
+    font-size: var(--text-h3);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .area-row dd {
+    align-self: center;
+    font-size: var(--text-sm);
+  }
+
+  .anywhere {
+    margin-top: clamp(2rem, 4vw, 3rem);
+    border: 2px solid var(--ink);
+    padding: clamp(1.75rem, 4vw, 3rem);
+  }
+
+  .anywhere h2 {
+    font-size: var(--text-h3);
+    font-weight: 300;
+    margin-bottom: 0.75rem;
+  }
+
+  .anywhere p {
+    max-width: 58ch;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 700px) {
+    .area-row {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
+  }
+</style>

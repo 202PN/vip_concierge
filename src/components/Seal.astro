@@ -1,0 +1,81 @@
+---
+/*
+  VIP CONCIERGE globe seal — vector recreation of the client-supplied logo
+  (oxblood ring, white ring text, black-lined globe, flanking mini-globes).
+  variant="full"  — brand colors, for paper/light grounds (header, about, favicon).
+  variant="mono"  — single-color knockout in currentColor, for oxblood/ink fields.
+*/
+interface Props {
+  size?: number;
+  class?: string;
+  variant?: "full" | "mono";
+}
+
+const { size = 56, class: className, variant = "full" } = Astro.props;
+
+const mono = variant === "mono";
+const ink = mono ? "currentColor" : "#0b0b0c";
+const ring = mono ? "none" : "#7a0000";
+const inner = mono ? "none" : "#ffffff";
+const text = mono ? "currentColor" : "#ffffff";
+const uid = mono ? "m" : "f";
+---
+
+<svg
+  class={className}
+  width={size}
+  height={size}
+  viewBox="0 0 100 100"
+  fill="none"
+  aria-hidden="true"
+>
+  <!-- ring -->
+  <circle cx="50" cy="50" r="47.5" fill={ring} stroke={ink} stroke-width="2.6"></circle>
+  <circle cx="50" cy="50" r="30.5" fill={inner} stroke={ink} stroke-width="2.2"></circle>
+
+  <!-- globe -->
+  <g stroke={ink}>
+    <circle cx="50" cy="50" r="25" stroke-width="2.8"></circle>
+    <ellipse cx="50" cy="50" rx="10.5" ry="25" stroke-width="2.2"></ellipse>
+    <ellipse cx="50" cy="50" rx="19.5" ry="25" stroke-width="2.2"></ellipse>
+    <line x1="25" y1="50" x2="75" y2="50" stroke-width="2.2"></line>
+    <path d="M28.2 38.5 Q50 33.5 71.8 38.5" stroke-width="2.2"></path>
+    <path d="M28.2 61.5 Q50 66.5 71.8 61.5" stroke-width="2.2"></path>
+  </g>
+
+  <!-- flanking mini-globes -->
+  {
+    [11.6, 88.4].map((x) => (
+      <g stroke={ink}>
+        <circle cx={x} cy="50" r="4.4" stroke-width="1" />
+        <ellipse cx={x} cy="50" rx="1.9" ry="4.4" stroke-width="0.8" />
+        <line x1={x - 4.4} y1="50" x2={x + 4.4} y2="50" stroke-width="0.8" />
+        <path d={`M${x - 3.5} 47.4 H${x + 3.5} M${x - 3.5} 52.6 H${x + 3.5}`} stroke-width="0.8" />
+      </g>
+    ))
+  }
+
+  <!-- ring text -->
+  <defs>
+    <path id={`seal-top-${uid}`} d="M50,50 m-35.4,0 a35.4,35.4 0 1,1 70.8,0" fill="none"></path>
+    <path id={`seal-bottom-${uid}`} d="M50,50 m-42.6,0 a42.6,42.6 0 1,0 85.2,0" fill="none"></path>
+  </defs>
+  <text
+    font-size="11"
+    font-family="Libre Franklin Variable, Franklin Gothic Medium, Arial, sans-serif"
+    font-weight="700"
+    letter-spacing="3"
+    fill={text}
+  >
+    <textPath href={`#seal-top-${uid}`} startOffset="50%" text-anchor="middle">VIP</textPath>
+  </text>
+  <text
+    font-size="9.5"
+    font-family="Libre Franklin Variable, Franklin Gothic Medium, Arial, sans-serif"
+    font-weight="700"
+    letter-spacing="1.6"
+    fill={text}
+  >
+    <textPath href={`#seal-bottom-${uid}`} startOffset="50%" text-anchor="middle">CONCIERGE</textPath>
+  </text>
+</svg>

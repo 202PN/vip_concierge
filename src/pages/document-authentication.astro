@@ -1,0 +1,151 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import CTABlock from "../components/CTABlock.astro";
+
+const steps = [
+  {
+    title: "Review",
+    body: "We check your documents against the destination country's requirements and confirm exactly which certifications they need: notarization, state, federal, apostille, or embassy legalization.",
+  },
+  {
+    title: "Certification",
+    body: "We walk your documents through state authorities, the U.S. Department of State, and the destination embassy, in the right order, by people who handle these channels every week.",
+  },
+  {
+    title: "Return",
+    body: "Your documents come back by courier or secure hand delivery, with the chain of custody intact, on the timeline we quoted.",
+  },
+];
+
+const documents = [
+  "Corporate records and powers of attorney",
+  "Certificates of incorporation and good standing",
+  "Educational diplomas and transcripts",
+  "Birth, marriage, and civil documents",
+  "Commercial and export documentation",
+  "Court documents and affidavits",
+];
+---
+
+<BaseLayout
+  title="Document Authentication — Apostille & Embassy Legalization | VIP Concierge"
+  description="Apostille and embassy legalization services in Washington, DC: corporate, civil, and educational documents authenticated through state, federal, and embassy channels with secure handling."
+>
+  <PageIntro
+    service="Document Authentication"
+    title="Document Authentication"
+    lede="Apostille and embassy legalization, handled in Washington through the correct channels, with the same discretion we bring to every engagement."
+  />
+
+  <section class="process field-paper">
+    <div class="wrap process-grid">
+      <div>
+        <h2 class="h2">The process</h2>
+        <dl class="list">
+          {steps.map((s) => (
+            <div class="row">
+              <dt>{s.title}</dt>
+              <dd class="on-paper-gray">{s.body}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      <aside class="doc-types">
+        <h2>Commonly handled</h2>
+        <ul>
+          {documents.map((d) => (
+            <li>{d}</li>
+          ))}
+        </ul>
+        <p class="note on-paper-gray">
+          Destination-specific requirements vary; timelines and fees are quoted
+          per document after review.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <CTABlock
+    service="Document Authentication"
+    heading="Authenticate a document."
+    body="Tell us the document type and destination country. We'll confirm what's required and quote a timeline the same day."
+  />
+</BaseLayout>
+
+<style>
+  .process {
+    padding-block: var(--sect);
+  }
+
+  .process-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+    gap: 3.5rem;
+    align-items: start;
+  }
+
+  h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  .list {
+    border-top: 3px solid var(--ink);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: minmax(7rem, 10rem) 1fr;
+    gap: 2rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .row dt {
+    font-size: var(--text-h3);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .row dd {
+    max-width: 58ch;
+  }
+
+  .doc-types {
+    border: 2px solid var(--ink);
+    padding: 1.75rem;
+  }
+
+  .doc-types h2 {
+    font-size: var(--text-h3);
+    font-weight: 300;
+  }
+
+  .doc-types ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .doc-types li {
+    font-size: var(--text-sm);
+    font-weight: 450;
+    padding-block: 0.6rem;
+    border-bottom: 1px solid var(--line-paper);
+  }
+
+  .note {
+    margin-top: 1rem;
+    font-size: var(--text-xs);
+  }
+
+  @media (max-width: 860px) {
+    .process-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+</style>

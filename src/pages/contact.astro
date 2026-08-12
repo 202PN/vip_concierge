@@ -1,0 +1,150 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import ContactForm from "../components/ContactForm.astro";
+---
+
+<BaseLayout
+  title="Contact — Request a Consultation | VIP Concierge"
+  description="Request a consultation with VIP Concierge: armored and executive transportation, accommodation, and logistics. McLean, VA. Answered 24/7 at +1 703-287-4227, by WhatsApp, or by inquiry form."
+>
+  <PageIntro
+    title="Request a Consultation"
+    lede="Tell us what you need: the movement, the stay, the document. A coordinator reads every inquiry and answers around the clock."
+    showActions={false}
+  />
+
+  <section class="contact field-paper">
+    <div class="wrap contact-grid">
+      <div class="form-col">
+        <ContactForm />
+      </div>
+
+      <aside class="details">
+        <h2>Direct channels</h2>
+        <dl>
+          <div>
+            <dt>Phone (24/7)</dt>
+            <dd><a href="tel:+17032874227">+1 703-287-4227</a></dd>
+          </div>
+          <div>
+            <dt>WhatsApp</dt>
+            <dd><a href="https://wa.me/17032874227" rel="noopener">Message +1 703-287-4227</a></dd>
+          </div>
+          <div>
+            <dt>Email</dt>
+            <dd><a href="mailto:info@dcvipconcierge.com">info@dcvipconcierge.com</a></dd>
+          </div>
+          <div>
+            <dt>Office</dt>
+            <dd>
+              8200 Greensboro Dr., Suite 900<br />
+              McLean, VA 22102
+            </dd>
+          </div>
+        </dl>
+
+        <div class="map">
+          <iframe
+            title="Map — VIP Concierge office, 8200 Greensboro Dr., McLean, VA"
+            src="https://www.google.com/maps?q=8200+Greensboro+Dr+Suite+900+McLean+VA+22102&output=embed"
+            width="100%"
+            height="260"
+            style="border:0"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <a
+            class="map-link"
+            href="https://www.google.com/maps/search/?api=1&query=8200+Greensboro+Dr+Suite+900+McLean+VA+22102"
+            rel="noopener"
+          >
+            Open in Google Maps →
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact {
+    padding-block: var(--sect);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr);
+    gap: 3.5rem;
+    align-items: start;
+  }
+
+  .details {
+    border: 2px solid var(--ink);
+    padding: 1.75rem;
+  }
+
+  .details h2 {
+    font-size: var(--text-h3);
+    font-weight: 300;
+    margin-bottom: 1.25rem;
+  }
+
+  .details dl {
+    display: grid;
+    gap: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .details dt {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 0.15rem;
+  }
+
+  .details dd {
+    font-size: var(--text-sm);
+    font-weight: 450;
+  }
+
+  .details a {
+    color: var(--ox);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .details a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .map {
+    border: 2px solid var(--ink);
+  }
+
+  .map iframe {
+    display: block;
+  }
+
+  .map-link {
+    display: block;
+    padding: 0.8rem 1rem;
+    border-top: 2px solid var(--ink);
+    font-size: var(--text-sm);
+    font-weight: 400;
+    color: var(--ox);
+    text-decoration: none;
+  }
+
+  .map-link:hover {
+    color: var(--ink);
+  }
+
+  @media (max-width: 900px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

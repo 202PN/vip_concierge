@@ -1,0 +1,189 @@
+---
+import { serviceGroups } from "../data/services";
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer field-ink">
+  <div class="wrap">
+    <hr class="rule-heavy" aria-hidden="true" />
+    <div class="cols">
+      <div class="col-brand">
+        <img class="footer-seal" src="/vip_red_sm.png" alt="" width="64" height="64" loading="lazy" />
+        <p class="brand-line">VIP Concierge</p>
+        <p class="on-ink-soft">
+          First-class transportation and concierge services for government,
+          corporate, and delegation clients. Washington, DC and all 50
+          states, 24/7.
+        </p>
+      </div>
+
+      {serviceGroups.map((g) => (
+        <nav class="col" aria-label={`Footer — ${g.title}`}>
+          <h2>{g.title}</h2>
+          <ul>
+            {g.items.map((s) => (
+              <li><a href={s.href}>{s.name}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+
+      <div class="col">
+        <h2>Contact</h2>
+        <address>
+          <p>8200 Greensboro Dr., Suite 900<br />McLean, VA 22102</p>
+          <p>
+            <a href="tel:+17032874227">+1 703-287-4227</a><br />
+            <a href="https://wa.me/17032874227" rel="noopener">Message us on WhatsApp</a><br />
+            <a href="mailto:info@dcvipconcierge.com">info@dcvipconcierge.com</a>
+          </p>
+        </address>
+        <ul class="quick">
+          <li><a href="/services">All Services</a></li>
+          <li><a href="/fleet">Fleet</a></li>
+          <li><a href="/service-areas">Service Areas</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/book">Book Now</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal">
+      <p>© {year} VIP Concierge. All rights reserved.</p>
+      <ul class="social">
+        <li><a href="https://facebook.com/DCVIPCONCIERGE" rel="noopener">Facebook</a></li>
+        <li><a href="https://twitter.com/DCVIPconcierge" rel="noopener">X&nbsp;(Twitter)</a></li>
+      </ul>
+      <p class="on-ink-soft">Available 24 hours a day, 7 days a week.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-block: var(--sect) 2.5rem;
+    background: #101013;
+  }
+
+  .rule-heavy {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+    gap: 2.5rem;
+  }
+
+  .footer-seal {
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .brand-line {
+    font-weight: 400;
+    font-size: var(--text-lg);
+    margin-bottom: 0.6rem;
+  }
+
+  .col-brand p {
+    max-width: 34ch;
+    font-size: var(--text-sm);
+  }
+
+  .col h2 {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--soft-ink);
+    margin-bottom: 1rem;
+  }
+
+  .col ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .col a {
+    color: var(--paper);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    font-weight: 450;
+  }
+
+  .col a:hover {
+    color: var(--ox-bright);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  address {
+    font-style: normal;
+    font-size: var(--text-sm);
+    display: grid;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  address a {
+    color: var(--paper);
+    font-weight: 450;
+    text-decoration: none;
+  }
+
+  address a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .quick {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem !important;
+  }
+
+  .legal {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--line-onink);
+    margin-top: clamp(2rem, 4vw, 3rem);
+    padding-top: 1.5rem;
+    font-size: var(--text-xs);
+  }
+
+  .social {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .social a {
+    color: var(--paper);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .social a:hover {
+    color: var(--ox-bright);
+  }
+
+  @media (max-width: 900px) {
+    .cols {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .cols {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

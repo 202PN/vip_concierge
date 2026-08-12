@@ -1,0 +1,250 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import FleetCard from "../components/FleetCard.astro";
+import CTABlock from "../components/CTABlock.astro";
+
+const protocol = [
+  {
+    title: "Assessment",
+    body: "Every engagement starts with a conversation: the principal, the schedule, the threat picture. The movement plan is built from that, not from a booking form.",
+  },
+  {
+    title: "Route planning",
+    body: "Primary and alternate routes are planned and timed in advance. Arrival and departure points are assessed before the vehicle moves.",
+  },
+  {
+    title: "Certified chauffeurs",
+    body: "Only certified executive-security chauffeurs drive our armored vehicles, trained in protective driving and principal handling. Certification details on request. [TBD]",
+  },
+  {
+    title: "Discretion",
+    body: "Low-profile vehicles, unmarked coordination, strict confidentiality. Identities, itineraries, and movements are never disclosed.",
+  },
+  {
+    title: "24/7 command",
+    body: "A live operations desk tracks every armored movement and answers around the clock. Schedule changes at midnight are handled at midnight.",
+  },
+];
+---
+
+<BaseLayout
+  title="Armored Transportation — Level 6 Ballistic Protection | VIP Concierge"
+  description="Level 6 ballistic-armored Escalade and Maybach vehicles with certified executive-security chauffeurs. Armored transportation for diplomats, executives, and delegations in Washington, DC and nationwide."
+>
+  <PageIntro
+    service="Armored Transportation"
+    title="Armored Transportation"
+    lede="Level 6 armored vehicles, certified security chauffeurs, and protective movement planning. For principals whose transportation is a security decision."
+  />
+
+  <!-- The standard: white plate -->
+  <section class="standard field-paper">
+    <div class="wrap standard-grid">
+      <div class="copy">
+        <h2 class="h2">The protection standard</h2>
+        <p class="lead-p">
+          Our fleet is built to Level 6 ballistic protection, rated against
+          high-powered rifle fire, yet looks like ordinary executive
+          transport inside and out. Protection works best when no one
+          knows it's there.
+        </p>
+        <p class="on-paper-gray">
+          The vehicle is one layer of protection. The certified security
+          chauffeur, the route plan, and the operations desk watching your
+          movement are the others.
+        </p>
+      </div>
+      <dl class="facts">
+        <div>
+          <dt>Ballistic rating</dt>
+          <dd>Level 6, rifle-rated protection <span class="on-paper-gray">[certification documents: TBD]</span></dd>
+        </div>
+        <div>
+          <dt>Operators</dt>
+          <dd>Certified executive-security chauffeurs only</dd>
+        </div>
+        <div>
+          <dt>Coverage</dt>
+          <dd>Washington, DC region and all 50 states</dd>
+        </div>
+        <div>
+          <dt>Availability</dt>
+          <dd>24/7, including immediate short-notice requests</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- Vehicles: white plate continued -->
+  <section class="vehicles field-paper">
+    <div class="wrap">
+      <hr class="rule-heavy" aria-hidden="true" />
+      <h2 class="h2">The armored fleet</h2>
+      <p class="sec-lede on-paper-gray">
+        Two vehicles, one standard: full Level 6 protection, discreet at any
+        gate in Washington.
+      </p>
+      <div class="vehicle-grid">
+        <FleetCard
+          name="Bulletproof Escalade"
+          tier="Armored"
+          capacity="Up to 6"
+          description="The armored workhorse of the capital region: command presence, delegation-appropriate space, and Level 6 protection behind factory bodywork."
+        />
+        <FleetCard
+          name="Bulletproof Maybach"
+          tier="Armored"
+          capacity="Up to 3"
+          description="Head-of-state comfort under Level 6 armor. For principals whose protection must be as uncompromising as their schedule, and as invisible."
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Protocol: deep field directory -->
+  <section class="protocol field-deep">
+    <div class="wrap">
+      <h2 class="h2">How an armored engagement runs</h2>
+      <p class="sec-lede on-red-soft">
+        The same protocol governs a single airport transfer and a two-week
+        delegation visit. Only the scale changes.
+      </p>
+      <dl class="protocol-list">
+        {protocol.map((p) => (
+          <div class="protocol-row">
+            <dt>{p.title}</dt>
+            <dd class="on-red-soft">{p.body}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <CTABlock
+    service="Armored Transportation"
+    heading="Discuss an armored requirement."
+    body="Start with a confidential consultation: the principal, the schedule, the threat picture. A senior coordinator responds directly, 24 hours a day."
+  />
+</BaseLayout>
+
+<style>
+  .standard {
+    padding-block: var(--sect) 0;
+  }
+
+  .standard-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 3.5rem;
+    align-items: start;
+    padding-bottom: var(--sect);
+  }
+
+  .copy h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  .lead-p {
+    font-size: var(--text-lg);
+    font-weight: 450;
+    max-width: 56ch;
+    margin-bottom: 1rem;
+  }
+
+  .copy p {
+    max-width: 58ch;
+  }
+
+  .facts {
+    border-top: 3px solid var(--ink);
+  }
+
+  .facts div {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    gap: 1rem;
+    padding-block: 1.05rem;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .facts dt {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray);
+    padding-top: 0.25rem;
+  }
+
+  .facts dd {
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+
+  .facts .on-paper-gray {
+    font-weight: 400;
+  }
+
+  .vehicles {
+    padding-block: 0 var(--sect);
+  }
+
+  .vehicles h2 {
+    margin-top: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 1rem;
+  }
+
+  .sec-lede {
+    max-width: 56ch;
+    margin-bottom: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+
+  .vehicle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .protocol {
+    padding-block: var(--sect);
+  }
+
+  .protocol h2 {
+    margin-bottom: 1rem;
+  }
+
+  .protocol-list {
+    border-top: 3px solid var(--ox-bright);
+  }
+
+  .protocol-row {
+    display: grid;
+    grid-template-columns: minmax(10rem, 16rem) 1fr;
+    gap: 2rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--line-onink);
+  }
+
+  .protocol-row dt {
+    font-size: var(--text-h3);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .protocol-row dd {
+    max-width: 62ch;
+  }
+
+  @media (max-width: 860px) {
+    .standard-grid,
+    .vehicle-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .protocol-row {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+</style>
