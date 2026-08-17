@@ -25,7 +25,7 @@ const cities = [
 >
   <!-- Hero carousel -->
   <section class="hero" aria-roledescription="carousel" aria-label="VIP Concierge highlights">
-    <article class="slide is-active" aria-label="1 of 3">
+    <article class="slide is-active" aria-roledescription="slide" aria-label="1 of 3">
       <video class="slide-video" src="/capital_traffic-1080.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
       <div class="slide-scrim" aria-hidden="true"></div>
       <div class="wrap slide-grid slide-grid-solo">
@@ -49,7 +49,7 @@ const cities = [
       </div>
     </article>
 
-    <article class="slide" aria-label="2 of 3" aria-hidden="true">
+    <article class="slide" aria-roledescription="slide" aria-label="2 of 3" aria-hidden="true">
       <video class="slide-video" src="/driving_int_bw.mp4" muted loop playsinline preload="metadata" aria-hidden="true"></video>
       <div class="slide-scrim" aria-hidden="true"></div>
       <div class="wrap slide-grid slide-grid-solo">
@@ -70,7 +70,7 @@ const cities = [
       </div>
     </article>
 
-    <article class="slide" aria-label="3 of 3" aria-hidden="true">
+    <article class="slide" aria-roledescription="slide" aria-label="3 of 3" aria-hidden="true">
       <video class="slide-video" src="/traffic_bw.mp4" muted loop playsinline preload="metadata" aria-hidden="true"></video>
       <div class="slide-scrim" aria-hidden="true"></div>
       <div class="wrap slide-grid">
@@ -90,53 +90,55 @@ const cities = [
         <div class="slide-visual map-visual" aria-hidden="true">
           <svg viewBox="0 0 440 348" fill="none">
             <!-- network map: DC hub, spokes to regularly served cities,
-                 dashed routes trailing beyond the frame = anywhere on request -->
-            <g stroke="#a31515" stroke-width="1.8" opacity="0.85" fill="none">
-              <path d="M320 168 Q 356 118 384 72"></path>
-              <path d="M320 168 Q 344 128 360 100"></path>
-              <path d="M320 168 Q 326 150 331 142"></path>
-              <path d="M320 168 Q 276 132 238 112"></path>
-              <path d="M320 168 Q 262 152 208 154"></path>
-              <path d="M320 168 Q 180 190 52 208"></path>
-              <path d="M320 168 Q 334 226 338 284"></path>
-              <path d="M320 168 Q 344 218 352 260"></path>
+                 dashed routes trailing beyond the frame = anywhere on request.
+                 When the slide arrives, the spokes plot outward from the hub
+                 and each city lights as its route lands (--d staggers). -->
+            <g class="map-routes" stroke="#a31515" stroke-width="1.8" opacity="0.85" fill="none">
+              <path d="M320 168 Q 356 118 384 72" pathLength="1" style="--d: 150ms"></path>
+              <path d="M320 168 Q 344 128 360 100" pathLength="1" style="--d: 230ms"></path>
+              <path d="M320 168 Q 326 150 331 142" pathLength="1" style="--d: 310ms"></path>
+              <path d="M320 168 Q 276 132 238 112" pathLength="1" style="--d: 390ms"></path>
+              <path d="M320 168 Q 262 152 208 154" pathLength="1" style="--d: 470ms"></path>
+              <path d="M320 168 Q 180 190 52 208" pathLength="1" style="--d: 550ms"></path>
+              <path d="M320 168 Q 334 226 338 284" pathLength="1" style="--d: 630ms"></path>
+              <path d="M320 168 Q 344 218 352 260" pathLength="1" style="--d: 710ms"></path>
             </g>
             <!-- routes that leave the map: coverage beyond the named cities -->
-            <g stroke="#a31515" stroke-width="1.2" stroke-dasharray="2 5" opacity="0.5" fill="none">
+            <g class="map-far" stroke="#a31515" stroke-width="1.2" stroke-dasharray="2 5" opacity="0.5" fill="none">
               <path d="M320 168 Q 230 80 96 10"></path>
               <path d="M320 168 Q 220 250 60 322"></path>
               <path d="M320 168 Q 396 230 438 296"></path>
               <path d="M320 168 Q 180 160 4 140"></path>
             </g>
             <!-- unnamed destinations, reached on request -->
-            <g fill="#ffffff" opacity="0.4">
+            <g class="map-far" fill="#ffffff" opacity="0.4">
               <circle cx="46" cy="58" r="2"></circle>
               <circle cx="140" cy="146" r="2"></circle>
               <circle cx="196" cy="238" r="2"></circle>
               <circle cx="282" cy="218" r="2"></circle>
               <circle cx="244" cy="86" r="2"></circle>
             </g>
-            <g font-family="Libre Franklin Variable, Arial, sans-serif" font-size="12" font-weight="500" letter-spacing="0.5">
+            <g class="map-pts" font-family="Libre Franklin Variable, Arial, sans-serif" font-size="12" font-weight="500" letter-spacing="0.5">
               <circle cx="320" cy="168" r="7" stroke="#ffffff" stroke-width="2"></circle>
               <circle cx="320" cy="168" r="3" fill="#ffffff"></circle>
               <text x="304" y="194" fill="#ffffff" font-weight="600">Washington DC</text>
-              <circle cx="384" cy="72" r="4" fill="#ffffff"></circle>
-              <text x="360" y="58" fill="#b9b9c0">Boston</text>
-              <circle cx="360" cy="100" r="4" fill="#ffffff"></circle>
-              <text x="336" y="88" fill="#b9b9c0">New York</text>
-              <circle cx="331" cy="142" r="4" fill="#ffffff"></circle>
-              <text x="341" y="138" fill="#b9b9c0">Baltimore</text>
-              <circle cx="238" cy="112" r="4" fill="#ffffff"></circle>
-              <text x="206" y="98" fill="#b9b9c0">Cleveland</text>
-              <circle cx="208" cy="154" r="4" fill="#ffffff"></circle>
-              <text x="172" y="176" fill="#b9b9c0">Cincinnati</text>
-              <circle cx="52" cy="208" r="4" fill="#ffffff"></circle>
-              <text x="24" y="230" fill="#b9b9c0">Los Angeles</text>
-              <circle cx="352" cy="260" r="4" fill="#ffffff"></circle>
-              <text x="362" y="258" fill="#b9b9c0">Palm Beach</text>
-              <circle cx="338" cy="284" r="4" fill="#ffffff"></circle>
-              <text x="348" y="296" fill="#b9b9c0">Miami</text>
-              <text x="14" y="342" fill="#b9b9c0" opacity="0.9">+ anywhere in the 50 states, arranged on request</text>
+              <circle cx="384" cy="72" r="4" fill="#ffffff" style="--d: 500ms"></circle>
+              <text x="360" y="58" fill="#b9b9c0" style="--d: 500ms">Boston</text>
+              <circle cx="360" cy="100" r="4" fill="#ffffff" style="--d: 580ms"></circle>
+              <text x="336" y="88" fill="#b9b9c0" style="--d: 580ms">New York</text>
+              <circle cx="331" cy="142" r="4" fill="#ffffff" style="--d: 660ms"></circle>
+              <text x="341" y="138" fill="#b9b9c0" style="--d: 660ms">Baltimore</text>
+              <circle cx="238" cy="112" r="4" fill="#ffffff" style="--d: 740ms"></circle>
+              <text x="206" y="98" fill="#b9b9c0" style="--d: 740ms">Cleveland</text>
+              <circle cx="208" cy="154" r="4" fill="#ffffff" style="--d: 820ms"></circle>
+              <text x="172" y="176" fill="#b9b9c0" style="--d: 820ms">Cincinnati</text>
+              <circle cx="52" cy="208" r="4" fill="#ffffff" style="--d: 900ms"></circle>
+              <text x="24" y="230" fill="#b9b9c0" style="--d: 900ms">Los Angeles</text>
+              <circle cx="352" cy="260" r="4" fill="#ffffff" style="--d: 1060ms"></circle>
+              <text x="362" y="258" fill="#b9b9c0" style="--d: 1060ms">Palm Beach</text>
+              <circle cx="338" cy="284" r="4" fill="#ffffff" style="--d: 980ms"></circle>
+              <text x="348" y="296" fill="#b9b9c0" style="--d: 980ms">Miami</text>
+              <text x="14" y="342" fill="#b9b9c0" opacity="0.9" style="--d: 1200ms">+ anywhere in the 50 states, arranged on request</text>
             </g>
           </svg>
         </div>
@@ -164,6 +166,7 @@ const cities = [
     const hero = document.querySelector(".hero");
     const slides = [...(hero?.querySelectorAll(".slide") ?? [])];
     const dots = [...(hero?.querySelectorAll(".dot") ?? [])];
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let index = 0;
     let timer: ReturnType<typeof setInterval> | undefined;
 
@@ -174,7 +177,8 @@ const cities = [
         s.setAttribute("aria-hidden", String(n !== index));
         const v = s.querySelector("video");
         if (v) {
-          if (n === index) v.play().catch(() => {});
+          // The films are display:none under reduced motion — never play them.
+          if (n === index && !reducedMotion) v.play().catch(() => {});
           else v.pause();
         }
       });
@@ -184,24 +188,31 @@ const cities = [
       });
     }
 
+    // Manual choice ends auto-rotation.
+    function stopAuto() {
+      clearInterval(timer);
+    }
+
     dots.forEach((d, n) =>
       d.addEventListener("click", () => {
         go(n);
-        clearInterval(timer); // manual choice ends auto-rotation
+        stopAuto();
       })
     );
 
     hero?.querySelector(".arrow-prev")?.addEventListener("click", () => {
       go(index - 1);
-      clearInterval(timer);
+      stopAuto();
     });
     hero?.querySelector(".arrow-next")?.addEventListener("click", () => {
       go(index + 1);
-      clearInterval(timer);
+      stopAuto();
     });
 
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (!reducedMotion) {
       timer = setInterval(() => go(index + 1), 7000);
+    } else {
+      slides.forEach((s) => s.querySelector("video")?.pause());
     }
   </script>
 
@@ -249,7 +260,7 @@ const cities = [
         <div><dt>Executive</dt><dd>Mercedes S580 · Escalade</dd></div>
         <div><dt>Group</dt><dd>Mercedes Sprinter · Toyota Sienna · Party Bus · Coach Bus</dd></div>
       </dl>
-      <p class="tbd on-paper-gray">Photography and capacities [TBD]</p>
+      <p class="tbd on-paper-gray">Armored and group vehicle photos available on request.</p>
       <a class="link" href="/fleet">Full fleet →</a>
     </div>
     <div class="cell">
@@ -366,6 +377,34 @@ const cities = [
   .map-visual {
     width: min(48vw, 38rem);
     translate: 0 -2.5rem;
+  }
+
+  /* Coverage plots itself each time the slide arrives: the hub holds,
+     spokes draw outward (pathLength-normalized), each city lights as its
+     route lands, and the dashed beyond-the-map routes surface last. */
+  .slide.is-active .map-visual :global(.map-routes path) {
+    stroke-dasharray: 1;
+    animation: route-draw 600ms cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms) backwards;
+  }
+
+  .slide.is-active .map-visual :global(.map-pts > *) {
+    animation: map-fade 450ms ease-out var(--d, 0ms) backwards;
+  }
+
+  .slide.is-active .map-visual :global(.map-far) {
+    animation: map-fade 600ms ease-out 1000ms backwards;
+  }
+
+  @keyframes route-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+
+  @keyframes map-fade {
+    from {
+      opacity: 0;
+    }
   }
 
   .slide-title {
