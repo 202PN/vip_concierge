@@ -1,7 +1,8 @@
 ---
 /*
   Inquiry form, wired for Formspree — Chancery grammar (lives on white relief).
-  TODO: replace FORM_ID in the action URL with the real Formspree form ID
+  Posts to Formspree form xvkoredy; submissions go to the address set in the
+  Formspree dashboard.
   (or point the action at Basin). Fields per client brief.
   Pills come from the canonical service IA; "Other / General" is the default
   and ?service=<name> (sent by page CTAs) preselects a specific line.
@@ -11,7 +12,7 @@ import { allServices } from "../data/services";
 const services = [...allServices.map((s) => s.name), "Other / General"];
 ---
 
-<form class="inquiry" action="https://formspree.io/f/FORM_ID" method="POST">
+<form class="inquiry" action="https://formspree.io/f/xvkoredy" method="POST">
   <input type="hidden" name="vehicle" value="" />
   <fieldset class="service-select">
     <legend>Service required</legend>
@@ -103,16 +104,6 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    // Endpoint not yet configured — route the visitor to live channels
-    // instead of a dead request. Remove once the real form ID is set.
-    if (form.action.includes("FORM_ID")) {
-      show(
-        "error",
-        'Online inquiries are briefly unavailable. Please call <a href="tel:+17032874227">+1 703-287-4227</a>, message us on <a href="https://wa.me/17032874227" rel="noopener">WhatsApp</a>, or email <a href="mailto:info@dcvipconcierge.com">info@dcvipconcierge.com</a>. Answered 24/7.'
-      );
-      return;
-    }
 
     if (submit) {
       submit.disabled = true;

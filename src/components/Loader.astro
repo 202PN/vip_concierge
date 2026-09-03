@@ -1,0 +1,225 @@
+---
+/*
+  Site loader — the seal on a dark translucent curtain that parts like a pair
+  of garage doors once the page has loaded.
+
+  Progressive enhancement: the curtain only appears when the inline script
+  below adds `is-loading` to <html> before first paint, so visitors without
+  JavaScript never see a stuck overlay. It plays on every full page load,
+  including refreshes and link clicks; set ONCE_PER_SESSION to true to show
+  it only once per browser tab (tracked in sessionStorage).
+*/
+const ONCE_PER_SESSION = false;
+const MIN_SHOW_MS = 1100; // hold the seal at least this long
+const MAX_WAIT_MS = 5000; // open no matter what after this
+---
+
+<script is:inline define:vars={{ ONCE_PER_SESSION }}>
+  (function () {
+    try {
+      if (ONCE_PER_SESSION && sessionStorage.getItem("vip-loader-seen")) return;
+    } catch (_) {}
+    document.documentElement.classList.add("is-loading");
+  })();
+</script>
+
+<div class="loader" id="site-loader" aria-hidden="true">
+  <div class="door door-top"></div>
+  <div class="door door-bottom"></div>
+  <div class="seam"></div>
+  <div class="mark">
+    <img class="seal" src="/vip_red2.png" alt="" width="630" height="630" decoding="async" fetchpriority="high" />
+    <p class="tagline">Getting things done your way.</p>
+  </div>
+</div>
+
+<script is:inline define:vars={{ ONCE_PER_SESSION, MIN_SHOW_MS, MAX_WAIT_MS }}>
+  (function () {
+    var html = document.documentElement;
+    var loader = document.getElementById("site-loader");
+    if (!loader) return;
+    if (!html.classList.contains("is-loading")) {
+      loader.remove();
+      return;
+    }
+
+    var start = performance.now();
+    var opened = false;
+
+    function open() {
+      if (opened) return;
+      opened = true;
+      try {
+        if (ONCE_PER_SESSION) sessionStorage.setItem("vip-loader-seen", "1");
+      } catch (_) {}
+      loader.classList.add("is-open");
+      html.classList.remove("is-loading");
+      html.classList.add("is-loaded");
+      var done = function () {
+        loader.remove();
+      };
+      loader.querySelector(".door-top").addEventListener("transitionend", done, { once: true });
+      setTimeout(done, 2200); // safety: reduced-motion or missed event
+    }
+
+    function openWhenReady() {
+      var elapsed = performance.now() - start;
+      setTimeout(open, Math.max(0, MIN_SHOW_MS - elapsed));
+    }
+
+    if (document.readyState === "complete") openWhenReady();
+    else window.addEventListener("load", openWhenReady, { once: true });
+    setTimeout(open, MAX_WAIT_MS);
+  })();
+</script>
+
+<style is:global>
+  /* Page holds still under the curtain. */
+  html.is-loading {
+    overflow: hidden;
+  }
+
+  /* No JS, or already seen this session: the curtain never renders. */
+  .loader {
+    display: none;
+  }
+
+  html.is-loading .loader,
+  .loader.is-open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    pointer-events: none;
+  }
+
+  html.is-loading .loader {
+    pointer-events: auto;
+  }
+
+  .loader .door {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: rgba(13, 13, 14, 0.82);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    will-change: transform;
+    transition: transform 900ms cubic-bezier(0.77, 0, 0.18, 1) 480ms;
+  }
+
+  .loader .door-top {
+    top: 0;
+  }
+
+  .loader .door-bottom {
+    bottom: 0;
+  }
+
+  /* The seam where the two doors meet: a hairline of oxblood that breathes
+     while the page loads, then tears open with the doors. */
+  .loader .seam {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 1px;
+    width: min(60vw, 26rem);
+    transform: translate(-50%, -50%) scaleX(0.35);
+    background: var(--ox-bright);
+    opacity: 0.55;
+    transform-origin: center;
+    animation: seam-breathe 1.8s ease-in-out infinite alternate;
+    transition: opacity 320ms ease;
+  }
+
+  /* Seal and tagline move as one unit, centered on the seam. */
+  .loader .mark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    justify-items: center;
+    gap: 1.25rem;
+    transform: translate(-50%, -50%) scale(1);
+    animation: seal-in 720ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    transition:
+      opacity 460ms ease,
+      transform 460ms cubic-bezier(0.4, 0, 1, 1);
+  }
+
+  .loader .seal {
+    width: clamp(7.5rem, 22vw, 12rem);
+    height: auto;
+    filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.55));
+  }
+
+  .loader .tagline {
+    font-family: var(--fr);
+    font-weight: 300;
+    font-size: clamp(0.9375rem, 0.8rem + 0.6vw, 1.1875rem);
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    color: var(--paper);
+    text-align: center;
+    text-wrap: balance;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Opening: the mark recedes first, then the doors part. */
+  .loader.is-open .mark {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.82);
+    animation: none;
+  }
+
+  .loader.is-open .seam {
+    opacity: 0;
+    animation: none;
+  }
+
+  .loader.is-open .door-top {
+    transform: translateY(-100%);
+  }
+
+  .loader.is-open .door-bottom {
+    transform: translateY(100%);
+  }
+
+  @keyframes seal-in {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  @keyframes seam-breathe {
+    from {
+      transform: translate(-50%, -50%) scaleX(0.35);
+      opacity: 0.35;
+    }
+    to {
+      transform: translate(-50%, -50%) scaleX(1);
+      opacity: 0.8;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .loader .door {
+      transition: opacity 500ms ease 200ms;
+    }
+    .loader.is-open .door-top,
+    .loader.is-open .door-bottom {
+      transform: none;
+      opacity: 0;
+    }
+    .loader .mark,
+    .loader .seam {
+      animation: none;
+    }
+  }
+</style>
