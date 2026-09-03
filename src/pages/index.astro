@@ -293,7 +293,6 @@ const cities = [
         <div class="dir-group">
           <div class="group-head">
             <h3><a class="h-link" href={`/services#${slug(g.title)}`}>{g.title}</a></h3>
-            <p class="on-red-soft">{g.blurb}</p>
           </div>
           <ul class="dir-list">
             {g.items.map((s) => (
@@ -328,10 +327,6 @@ const cities = [
     </div>
     <div class="cell" id="service-areas">
       <h2 class="h2"><a class="h-link" href="/service-areas">Service areas</a></h2>
-      <p class="cell-copy on-paper-gray">
-        Based in McLean, Virginia. Daily service in the capital region and
-        major U.S. cities. Anywhere else in the 50 states on request.
-      </p>
       <p class="cities">{cities.join(" · ")} · <a href="/contact">+ any city on request</a></p>
     </div>
   </section>
@@ -672,9 +667,6 @@ const cities = [
     letter-spacing: -0.02em;
   }
 
-  .group-head p {
-    font-size: var(--text-sm);
-  }
 
   .dir-list {
     list-style: none;
@@ -738,10 +730,6 @@ const cities = [
     margin-top: 0.9rem;
   }
 
-  .cell-copy {
-    max-width: 44ch;
-    margin-bottom: 1rem;
-  }
 
   .cities {
     font-weight: 450;
