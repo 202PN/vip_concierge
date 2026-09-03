@@ -6,7 +6,7 @@ import CTABlock from "../components/CTABlock.astro";
 const commitments = [
   {
     title: "Discretion",
-    body: "We never discuss, market, or disclose client identities, itineraries, or movements. The clients who need us most are the ones you'll never hear about from us.",
+    body: "Client identities, itineraries, and movements are never discussed, marketed, or disclosed.",
   },
   {
     title: "Capability",
@@ -14,7 +14,7 @@ const commitments = [
   },
   {
     title: "Reliability",
-    body: "A live coordinator answers 24/7. Schedules are confirmed, vehicles arrive early, and changes are handled without drama.",
+    body: "A live coordinator answers 24/7. Schedules are confirmed, vehicles arrive early, and changes are handled immediately.",
   },
 ];
 ---
@@ -25,24 +25,22 @@ const commitments = [
 >
   <PageIntro
     title="An institutional partner, not a car service"
-    lede="We serve governments, corporations, and diplomatic missions whose transportation carries institutional weight, in Washington and beyond."
+    lede="We serve governments, corporations, and diplomatic missions in Washington and nationwide."
     showActions={false}
   />
 
   <section class="philosophy field-paper">
     <div class="wrap philosophy-grid">
       <div class="copy">
-        <h2 class="h2">Our philosophy</h2>
+        <h2 class="h2">How we work</h2>
         <p class="lead-p">
-          The measure of this work is what does not happen. The motorcade that
-          is never late. The principal who is never exposed. The itinerary that
-          never leaks. Every engagement is built backward from that standard:
-          assessment, plan, vehicle.
+          Every engagement is planned in advance: assessment, movement plan,
+          vehicle. Schedules hold and itineraries stay confidential.
         </p>
         <p class="on-paper-gray">
-          We work from McLean, Virginia, minutes from Washington's
-          institutions, handling everything from armored delegation visits
-          to documents that must clear an embassy.
+          We operate from McLean, Virginia, minutes from Washington's
+          institutions, handling armored and executive transportation,
+          accommodation, travel, and document services.
         </p>
         <p class="tbd on-paper-gray">[Founding year and company history: TBD]</p>
       </div>
@@ -54,7 +52,7 @@ const commitments = [
 
   <section class="commitments field-deep">
     <div class="wrap">
-      <h2 class="h2">What we hold ourselves to</h2>
+      <h2 class="h2">Our standards</h2>
       <dl class="commit-list">
         {commitments.map((c) => (
           <div class="commit-row">

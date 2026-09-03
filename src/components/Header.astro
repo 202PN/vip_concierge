@@ -5,8 +5,26 @@ const current = Astro.url.pathname;
 ---
 
 <header class="site-header">
+  <div class="notice" role="note" aria-label="Availability">
+    <div class="wrap notice-inner">
+      <p class="notice-text">
+        <span class="notice-dot" aria-hidden="true"></span>
+        <span class="notice-label notice-long">At your service 24 hours a day, 7 days a week</span>
+        <span class="notice-label notice-short">Available 24/7</span>
+      </p>
+      <div class="notice-contact">
+        <a class="notice-phone" href="tel:+17032874227" aria-label="Call +1 703-287-4227">+1 703-287-4227</a>
+        <a class="notice-wa" href="https://wa.me/17032874227" rel="noopener" target="_blank" aria-label="Message us on WhatsApp" title="WhatsApp">
+          <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+            <path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.2-.6-.3zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.8zm0-21.6C5.6.2.4 5.4.4 11.8c0 2 .5 4 1.5 5.8L.3 23.7l6.2-1.6c1.7.9 3.6 1.4 5.5 1.4 6.4 0 11.6-5.2 11.6-11.6S18.4.2 12 .2z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
   <div class="wrap bar">
-    <a class="brand" href="/">
+    <a class="brand" href="/" aria-label="VIP Concierge — home">
       <img
         class="brand-logo"
         src="/vip_red2_sm.png"
@@ -48,8 +66,8 @@ const current = Astro.url.pathname;
     </nav>
 
     <div class="actions">
-      <a class="btn btn-ghost btn-compact" href="/book" data-track="header-book">Book Now</a>
-      <a class="btn btn-light btn-compact" href="/contact" data-track="header-consult">Request a Consultation</a>
+      <a class="btn btn-ghost btn-compact" href="/contact" data-track="header-consult">Request a Consultation</a>
+      <a class="btn btn-light btn-compact" href="/book" data-track="header-book">Book Now</a>
     </div>
 
     <button type="button" class="hamburger" aria-expanded="false" aria-controls="mobile-nav" aria-label="Menu">
@@ -76,8 +94,8 @@ const current = Astro.url.pathname;
       <li><a href="/contact" aria-current={current === "/contact" ? "page" : undefined}>Contact</a></li>
     </ul>
     <div class="mobile-actions">
-      <a class="btn btn-light" href="/contact" data-track="header-consult">Request a Consultation</a>
-      <a class="btn btn-ghost" href="/book" data-track="header-book">Book Now</a>
+      <a class="btn btn-ghost" href="/contact" data-track="header-consult">Request a Consultation</a>
+      <a class="btn btn-light" href="/book" data-track="header-book">Book Now</a>
     </div>
     <p class="mobile-phone">
       Answered 24/7: <a href="tel:+17032874227">+1 703-287-4227</a>
@@ -170,11 +188,102 @@ const current = Astro.url.pathname;
       background-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  /* 24/7 notice: a quiet, solid strip that rides above the transparent bar. */
+  .notice {
+    background: var(--ink);
+    border-bottom: 1px solid var(--line-onink);
+  }
+
+  .notice-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    height: var(--notice-h);
+  }
+
+  .notice-text {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--soft-ink);
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .notice-label {
+    color: var(--paper);
+    font-weight: 500;
+  }
+
+  .notice-short {
+    display: none;
+  }
+
+  .notice-dot {
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #2fbf71;
+    box-shadow: 0 0 0 0 rgba(47, 191, 113, 0.55);
+    animation: notice-pulse 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+
+  @keyframes notice-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(47, 191, 113, 0.55); }
+    70%, 100% { box-shadow: 0 0 0 7px rgba(47, 191, 113, 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .notice-dot {
+      animation: none;
+    }
+  }
+
+  .notice-contact {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .notice-wa {
+    display: inline-flex;
+    align-items: center;
+    color: var(--soft-ink);
+    transition: color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .notice-wa:hover {
+    color: var(--paper);
+  }
+
+  .notice-phone {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--paper);
+    text-decoration: none;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    transition: color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .notice-phone:hover {
+    color: var(--ox-bright);
+  }
+
   .bar {
     display: flex;
     align-items: center;
     gap: 1.75rem;
-    height: 4.5rem;
+    height: var(--bar-h);
   }
 
   .brand {
@@ -360,7 +469,7 @@ const current = Astro.url.pathname;
     border-top: 1px solid var(--line-onink);
     background: var(--ink);
     padding: 1.5rem var(--gutter) 2rem;
-    max-height: calc(100dvh - 4.5rem);
+    max-height: calc(100dvh - var(--header-h));
     overflow-y: auto;
   }
 
@@ -424,27 +533,74 @@ const current = Astro.url.pathname;
     text-decoration: none;
   }
 
+  /* The bar gives ground progressively so the full nav survives down to
+     phone width: first the consultation button goes (Contact stays in the
+     nav), then spacing tightens, then the wordmark yields to the seal.
+     Only phones get the hamburger. */
   @media (max-width: 1150px) {
-    .nav {
+    .actions .btn-ghost {
       display: none;
     }
+  }
 
-    .actions .btn-ghost {
+  @media (max-width: 1000px) {
+    .bar {
+      gap: 1.25rem;
+    }
+
+    .nav-list {
+      gap: 1rem;
+    }
+
+    .brand-name {
+      font-size: 1.0625rem;
+    }
+  }
+
+  @media (max-width: 880px) {
+    .brand-name {
+      display: none;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .nav {
       display: none;
     }
 
     .hamburger {
       display: flex;
     }
+
+    /* Book Now stays beside the hamburger at every width. */
+    .bar {
+      gap: 0.85rem;
+    }
+
+    .notice-long {
+      display: none;
+    }
+
+    .notice-short {
+      display: inline;
+    }
   }
 
-  @media (max-width: 740px) {
-    .actions {
+  /* The phone number is a one-tap call: it stays; the label shrinks first. */
+  @media (max-width: 480px) {
+    .notice-text {
+      font-size: 0.625rem;
+      gap: 0.5rem;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .notice-label {
       display: none;
     }
   }
 
-  @media (min-width: 1151px) {
+  @media (min-width: 721px) {
     .mobile-nav {
       display: none;
     }

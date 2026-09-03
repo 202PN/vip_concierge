@@ -3,11 +3,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PageIntro from "../components/PageIntro.astro";
 import FleetCard from "../components/FleetCard.astro";
 import CTABlock from "../components/CTABlock.astro";
+import { byTier } from "../data/fleet";
+
+const armored = byTier("armored");
 
 const protocol = [
   {
     title: "Assessment",
-    body: "Every engagement starts with a conversation: the principal, the schedule, the threat picture. The movement plan is built from that, not from a booking form.",
+    body: "Every engagement starts with the principal, the schedule, and the threat picture. The movement plan is built from that assessment.",
   },
   {
     title: "Route planning",
@@ -23,7 +26,7 @@ const protocol = [
   },
   {
     title: "24/7 command",
-    body: "A live operations desk tracks every armored movement and answers around the clock. Schedule changes at midnight are handled at midnight.",
+    body: "A live operations desk tracks every armored movement and answers around the clock.",
   },
 ];
 ---
@@ -35,7 +38,7 @@ const protocol = [
   <PageIntro
     service="Armored Transportation"
     title="Armored Transportation"
-    lede="Level 6 armored vehicles, certified security chauffeurs, and protective movement planning. For principals whose transportation is a security decision."
+    lede="Level 6 armored vehicles, certified security chauffeurs, and protective movement planning."
   />
 
   <!-- The standard: white plate -->
@@ -44,15 +47,13 @@ const protocol = [
       <div class="copy">
         <h2 class="h2">The protection standard</h2>
         <p class="lead-p">
-          Our fleet is built to Level 6 ballistic protection, rated against
-          high-powered rifle fire, yet looks like ordinary executive
-          transport inside and out. Protection works best when no one
-          knows it's there.
+          Level 6 ballistic protection, rated against high-powered rifle
+          fire, in vehicles that look like ordinary executive transport
+          inside and out.
         </p>
         <p class="on-paper-gray">
-          The vehicle is one layer of protection. The certified security
-          chauffeur, the route plan, and the operations desk watching your
-          movement are the others.
+          Every movement includes a certified security chauffeur, a planned
+          route, and live tracking by our operations desk.
         </p>
       </div>
       <dl class="facts">
@@ -82,22 +83,12 @@ const protocol = [
       <hr class="rule-heavy" aria-hidden="true" />
       <h2 class="h2">The armored fleet</h2>
       <p class="sec-lede on-paper-gray">
-        Two vehicles, one standard: full Level 6 protection, discreet at any
-        gate in Washington.
+        Two vehicles, both with full Level 6 protection.
       </p>
       <div class="vehicle-grid">
-        <FleetCard
-          name="Bulletproof Escalade"
-          tier="Armored"
-          capacity="Up to 6"
-          description="The armored workhorse of the capital region: command presence, delegation-appropriate space, and Level 6 protection behind factory bodywork."
-        />
-        <FleetCard
-          name="Bulletproof Maybach"
-          tier="Armored"
-          capacity="Up to 3"
-          description="Head-of-state comfort under Level 6 armor. For principals whose protection must be as uncompromising as their schedule, and as invisible."
-        />
+        {armored.map((v) => (
+          <FleetCard vehicle={v} />
+        ))}
       </div>
     </div>
   </section>
@@ -107,8 +98,8 @@ const protocol = [
     <div class="wrap">
       <h2 class="h2">How an armored engagement runs</h2>
       <p class="sec-lede on-red-soft">
-        The same protocol governs a single airport transfer and a two-week
-        delegation visit. Only the scale changes.
+        The same protocol applies to a single transfer and a multi-week
+        delegation visit.
       </p>
       <dl class="protocol-list">
         {protocol.map((p) => (
@@ -124,7 +115,7 @@ const protocol = [
   <CTABlock
     service="Armored Transportation"
     heading="Discuss an armored requirement."
-    body="Start with a confidential consultation: the principal, the schedule, the threat picture. A senior coordinator responds directly, 24 hours a day."
+    body="Tell us the principal, the schedule, and the threat picture. A senior coordinator responds directly, 24 hours a day."
   />
 </BaseLayout>
 

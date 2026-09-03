@@ -3,10 +3,28 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PageIntro from "../components/PageIntro.astro";
 import FleetCard from "../components/FleetCard.astro";
 import CTABlock from "../components/CTABlock.astro";
-import escaladeFront from "../assets/escalade.png";
-import s580Front from "../assets/s580.png";
-import sprinterFront from "../assets/sprinter.png";
-import siennaFront from "../assets/sienna.png";
+import { byTier } from "../data/fleet";
+
+const tiers = [
+  {
+    id: "armored",
+    title: "Armored",
+    note: "Level 6 ballistic protection, certified executive-security chauffeurs only.",
+    vehicles: byTier("armored"),
+  },
+  {
+    id: "executive",
+    title: "Executive",
+    note: "Executive sedans and SUVs for individuals and small teams.",
+    vehicles: byTier("executive"),
+  },
+  {
+    id: "group",
+    title: "Group & Delegation",
+    note: "Delegations, staff, and event groups on one vehicle and one schedule.",
+    vehicles: byTier("group"),
+  },
+];
 ---
 
 <BaseLayout
@@ -15,110 +33,41 @@ import siennaFront from "../assets/sienna.png";
 >
   <PageIntro
     title="The Fleet"
-    lede="Armored, executive, and group: three tiers matched to the mission. Every vehicle is late-model, immaculately kept, and professionally chauffeured."
+    lede="Three tiers: armored, executive, and group. Every vehicle is late-model and professionally chauffeured. Select a vehicle to see photos and book."
     showActions={false}
   />
 
   <section class="tiers field-paper">
     <div class="wrap">
-      <div class="tier">
-        <div class="tier-head">
-          <h2 class="h2">Armored</h2>
-          <p class="on-paper-gray">Level 6 ballistic protection, certified executive-security chauffeurs only.</p>
+      {tiers.map((t) => (
+        <div class="tier" id={t.id}>
+          <div class="tier-head">
+            <h2 class="h2">{t.title}</h2>
+            <p class="on-paper-gray">{t.note}</p>
+          </div>
+          <div class="grid two">
+            {t.vehicles.map((v) => (
+              <FleetCard vehicle={v} showTier={false} />
+            ))}
+          </div>
         </div>
-        <div class="grid two">
-          <FleetCard
-            showTier={false}
-            name="Bulletproof Escalade"
-            tier="Armored"
-            capacity="Up to 6"
-            description="The armored workhorse of the capital region: command presence, delegation-appropriate space, and Level 6 protection behind factory bodywork."
-          />
-          <FleetCard
-            showTier={false}
-            name="Bulletproof Maybach"
-            tier="Armored"
-            capacity="Up to 3"
-            description="Head-of-state comfort under Level 6 armor. For principals whose protection must be as uncompromising as their schedule."
-          />
-        </div>
-      </div>
-
-      <div class="tier">
-        <div class="tier-head">
-          <h2 class="h2">Executive</h2>
-          <p class="on-paper-gray">The executive standard: quiet, composed, appropriate at any embassy gate, boardroom, or terminal.</p>
-        </div>
-        <div class="grid two">
-          <FleetCard
-            showTier={false}
-            name="Mercedes S580"
-            tier="Executive"
-            capacity="Up to 3"
-            image={s580Front}
-            description="The definitive executive saloon: the vehicle boards, banks, and missions expect at the curb."
-          />
-          <FleetCard
-            showTier={false}
-            name="Escalade"
-            tier="Executive"
-            capacity="Up to 6"
-            image={escaladeFront}
-            description="Executive presence with working room. For teams, security details, and principals who travel with more than a briefcase."
-          />
-        </div>
-      </div>
-
-      <div class="tier">
-        <div class="tier-head">
-          <h2 class="h2">Group &amp; Delegation</h2>
-          <p class="on-paper-gray">Group-scale capacity without splitting the party: delegations, staff, and event groups on one schedule.</p>
-        </div>
-        <div class="grid two">
-          <FleetCard
-            showTier={false}
-            name="Mercedes Sprinter"
-            tier="Group & Delegation"
-            capacity="Up to 14"
-            image={sprinterFront}
-            description="The delegation shuttle: executive seating and standing room, sized for advance teams, press pools, and staff movements."
-          />
-          <FleetCard
-            showTier={false}
-            name="Toyota Sienna"
-            tier="Group & Delegation"
-            capacity="Up to 7"
-            image={siennaFront}
-            description="Discreet multi-passenger capability for staff transfers and low-profile movements where an SUV would draw attention."
-          />
-          <FleetCard
-            showTier={false}
-            name="Party Bus"
-            tier="Group & Delegation"
-            capacity="Up to 30"
-            description="A social cabin at group scale, for celebrations, corporate events, and evenings where the ride is part of the occasion."
-          />
-          <FleetCard
-            showTier={false}
-            name="Coach Bus"
-            tier="Group & Delegation"
-            capacity="Up to 55"
-            description="Full-delegation capacity for summits, conferences, and official visits. One vehicle, one manifest, one schedule."
-          />
-        </div>
-      </div>
+      ))}
     </div>
   </section>
 
   <CTABlock
-    heading="Match a vehicle to the mission."
-    body="Tell us the passengers, luggage, and threat profile, and we'll recommend the tier and the vehicle. Photos of armored and group vehicles on request."
+    heading="Match a vehicle to the requirement."
+    body="Tell us the passengers, luggage, and threat profile. We'll recommend the vehicle. Photos of group vehicles on request."
   />
 </BaseLayout>
 
 <style>
   .tiers {
     padding-block: var(--sect);
+  }
+
+  .tier {
+    scroll-margin-top: calc(var(--header-h) + 1rem);
   }
 
   .tier + .tier {

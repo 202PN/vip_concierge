@@ -4,6 +4,15 @@ import GridGlobe from "../components/GridGlobe.astro";
 import ServiceCard from "../components/ServiceCard.astro";
 import CTABlock from "../components/CTABlock.astro";
 import { serviceGroups } from "../data/services";
+import { byTier, type Tier } from "../data/fleet";
+
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+const fleetRows: { label: string; tier: Tier }[] = [
+  { label: "Armored", tier: "armored" },
+  { label: "Executive", tier: "executive" },
+  { label: "Group", tier: "group" },
+];
 
 const cities = [
   "Washington DC",
@@ -34,8 +43,8 @@ const cities = [
           <div class="hero-foot">
             <p class="lede on-red-soft">
               Secure transportation and concierge services for government,
-              corporate, and diplomatic clients. Based in McLean, Virginia,
-              serving Washington and all 50 states, 24/7.
+              corporate, and diplomatic clients. Washington and all 50
+              states, 24/7.
             </p>
             <div class="acts">
               <a class="btn btn-light" href="/contact" data-track="hero-consult">Request a Consultation</a>
@@ -54,12 +63,11 @@ const cities = [
       <div class="slide-scrim" aria-hidden="true"></div>
       <div class="wrap slide-grid slide-grid-solo">
         <div class="slide-copy">
-          <h2 class="slide-title">A fleet for every mission profile.</h2>
+          <h2 class="slide-title"><a class="title-link" href="/fleet">Armored, executive, and group vehicles.</a></h2>
           <div class="hero-foot">
             <p class="lede on-red-soft">
-              Level 6 armored Escalade and Maybach, the executive Mercedes
-              S580, and group vehicles from Sprinter to full coach. All
-              late-model, all professionally chauffeured.
+              Armored Escalades and Maybachs, executive sedans, and group
+              vehicles up to full coach. Late-model, chauffeured.
             </p>
             <div class="acts">
               <a class="btn btn-light" href="/fleet" data-track="hero-fleet">Explore the Fleet</a>
@@ -75,11 +83,11 @@ const cities = [
       <div class="slide-scrim" aria-hidden="true"></div>
       <div class="wrap slide-grid">
         <div class="slide-copy">
-          <h2 class="slide-title">The capital region and all fifty states.</h2>
+          <h2 class="slide-title"><a class="title-link" href="/service-areas">The capital region and all fifty states.</a></h2>
           <div class="hero-foot">
             <p class="lede on-red-soft">
-              Regular service across the capital region and major U.S. cities.
-              Need another city? We arrange coverage anywhere in the country.
+              Daily service in the capital region and major U.S. cities.
+              Anywhere else, we arrange it.
             </p>
             <div class="acts">
               <a class="btn btn-light" href="/service-areas" data-track="hero-areas">View Service Areas</a>
@@ -209,6 +217,34 @@ const cities = [
       stopAuto();
     });
 
+    // Touch: a horizontal swipe moves between slides (no buttons needed).
+    let startX = 0;
+    let startY = 0;
+    let swiping = false;
+    hero?.addEventListener(
+      "pointerdown",
+      (e) => {
+        if (e.pointerType === "mouse") return;
+        startX = e.clientX;
+        startY = e.clientY;
+        swiping = true;
+      },
+      { passive: true }
+    );
+    hero?.addEventListener("pointerup", (e) => {
+      if (!swiping) return;
+      swiping = false;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        go(dx < 0 ? index + 1 : index - 1);
+        stopAuto();
+      }
+    });
+    hero?.addEventListener("pointercancel", () => {
+      swiping = false;
+    });
+
     if (!reducedMotion) {
       timer = setInterval(() => go(index + 1), 7000);
     } else {
@@ -219,25 +255,25 @@ const cities = [
   <!-- Chancery capability band -->
   <section class="band" aria-label="Capabilities">
     <ul>
-      <li>Armored &amp; executive fleet</li>
-      <li>Certified security chauffeurs</li>
-      <li>Embassy &amp; delegation experience</li>
-      <li>24/7, all 50 states</li>
+      <li><a href="/fleet">Armored &amp; executive fleet</a></li>
+      <li><a href="/armored-transportation">Certified security chauffeurs</a></li>
+      <li><a href="/about">Embassy &amp; delegation experience</a></li>
+      <li><a href="/service-areas">24/7, all 50 states</a></li>
     </ul>
   </section>
 
   <!-- Services directory: Transportation + Concierge -->
-  <section class="directory field-deep">
+  <section class="directory field-deep" id="services">
     <div class="wrap">
-      <h2 class="h2">Services</h2>
+      <h2 class="h2"><a class="h-link" href="/services">Services</a></h2>
       <p class="dir-lede on-red-soft">
-        Transportation, accommodation, travel, and document services. One
-        team, one professional standard.
+        Transportation, accommodation, travel, and document services under
+        one team.
       </p>
       {serviceGroups.map((g) => (
         <div class="dir-group">
           <div class="group-head">
-            <h3>{g.title}</h3>
+            <h3><a class="h-link" href={`/services#${slug(g.title)}`}>{g.title}</a></h3>
             <p class="on-red-soft">{g.blurb}</p>
           </div>
           <ul class="dir-list">
@@ -253,21 +289,31 @@ const cities = [
 
   <!-- White relief: fleet + coverage -->
   <section class="duo field-paper">
-    <div class="cell">
-      <h2 class="h2">Fleet</h2>
+    <div class="cell" id="fleet">
+      <h2 class="h2"><a class="h-link" href="/fleet">Fleet</a></h2>
       <dl>
-        <div><dt>Armored</dt><dd>Bulletproof Escalade · Bulletproof Maybach</dd></div>
-        <div><dt>Executive</dt><dd>Mercedes S580 · Escalade</dd></div>
-        <div><dt>Group</dt><dd>Mercedes Sprinter · Toyota Sienna · Party Bus · Coach Bus</dd></div>
+        {fleetRows.map((r) => (
+          <div>
+            <dt>{r.label}</dt>
+            <dd>
+              {byTier(r.tier).map((v, i) => (
+                <>
+                  {i > 0 && " · "}
+                  <a href={`/fleet#${v.id}`}>{v.name}</a>
+                </>
+              ))}
+            </dd>
+          </div>
+        ))}
       </dl>
-      <p class="tbd on-paper-gray">Armored and group vehicle photos available on request.</p>
+      <p class="tbd on-paper-gray">Group vehicle photos available on request.</p>
       <a class="link" href="/fleet">Full fleet →</a>
     </div>
-    <div class="cell">
-      <h2 class="h2">Service areas</h2>
+    <div class="cell" id="service-areas">
+      <h2 class="h2"><a class="h-link" href="/service-areas">Service areas</a></h2>
       <p class="cell-copy on-paper-gray">
-        Based in McLean, Virginia. Regular service across the capital region
-        and major U.S. cities. Anywhere else in the 50 states on request.
+        Based in McLean, Virginia. Daily service in the capital region and
+        major U.S. cities. Anywhere else in the 50 states on request.
       </p>
       <p class="cities">{cities.join(" · ")} · <a href="/contact">+ any city on request</a></p>
       <a class="link" href="/service-areas">All service areas →</a>
@@ -286,6 +332,7 @@ const cities = [
        in one grid cell so the tallest slide sets the hero's height. */
     margin-top: calc(-1 * var(--header-h));
     display: grid;
+    touch-action: pan-y;
   }
 
   .slide {
@@ -413,6 +460,18 @@ const cities = [
     line-height: 1.02;
     letter-spacing: -0.01em;
     max-width: 18ch;
+  }
+
+  .title-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .title-link:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.12em;
+    text-decoration-color: var(--ox-bright);
   }
 
   .dots {
@@ -553,6 +612,11 @@ const cities = [
     padding-block: var(--sect);
   }
 
+  .directory,
+  .cell {
+    scroll-margin-top: var(--header-h);
+  }
+
   /* Section heads: a chapter-scale step above the group heads below them,
      opened with the heavy rule so each section announces itself. */
   .directory .h2,
@@ -655,6 +719,17 @@ const cities = [
     font-size: var(--text-sm);
   }
 
+  .cell dd a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .cell dd a:hover {
+    color: var(--ox);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
   .tbd {
     font-size: 0.8125rem;
     margin-top: 0.9rem;
@@ -705,7 +780,7 @@ const cities = [
     }
 
     .slide-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       align-items: start;
     }
 
@@ -713,7 +788,7 @@ const cities = [
     .slide-visual {
       order: -1;
       justify-self: center;
-      width: min(72vw, 19rem);
+      width: min(100%, 19rem);
       margin-bottom: 0.75rem;
       opacity: 1;
     }
@@ -725,7 +800,7 @@ const cities = [
     }
 
     .map-visual {
-      width: min(94vw, 26rem);
+      width: min(100%, 26rem);
       translate: none;
     }
 
@@ -742,6 +817,21 @@ const cities = [
     .cell + .cell {
       border-left: 0;
       border-top: 3px solid var(--ink);
+    }
+  }
+
+  /* Phones: the chevrons would sit over the copy; swiping and the dots
+     carry the carousel instead. Fact lists stack. */
+  @media (max-width: 720px) {
+    .arrow {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .cell dl div {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
     }
   }
 </style>

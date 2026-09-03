@@ -12,8 +12,12 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
 ---
 
 <form class="inquiry" action="https://formspree.io/f/FORM_ID" method="POST">
+  <input type="hidden" name="vehicle" value="" />
   <fieldset class="service-select">
     <legend>Service required</legend>
+    <p class="vehicle-line" hidden>
+      Inquiring about <strong class="vehicle-name"></strong>
+    </p>
     <div class="pills">
       {services.map((s) => (
         <label class="pill">
@@ -72,6 +76,20 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
       `input[name="service"][value="${CSS.escape(wanted)}"]`
     );
     if (match) match.checked = true;
+  }
+
+  // ?vehicle= (sent by fleet cards) names the vehicle in the inquiry and
+  // shows the visitor it carried over.
+  const vehicle = new URLSearchParams(location.search).get("vehicle");
+  if (vehicle && form) {
+    const hidden = form.querySelector<HTMLInputElement>('input[name="vehicle"]');
+    const line = form.querySelector<HTMLElement>(".vehicle-line");
+    const nameEl = form.querySelector<HTMLElement>(".vehicle-name");
+    if (hidden) hidden.value = vehicle;
+    if (nameEl) nameEl.textContent = vehicle;
+    if (line) line.hidden = false;
+    const message = form.querySelector<HTMLTextAreaElement>("#f-message");
+    if (message && !message.value) message.value = `Vehicle: ${vehicle}\n\n`;
   }
   const status = form?.querySelector<HTMLElement>(".form-status");
   const submit = form?.querySelector<HTMLButtonElement>("button[type=submit]");
@@ -145,6 +163,17 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
     text-transform: uppercase;
     color: var(--gray);
     margin-bottom: 0.75rem;
+  }
+
+  .vehicle-line {
+    font-size: var(--text-sm);
+    border-left: 3px solid var(--ox);
+    padding-left: 0.9rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .vehicle-line strong {
+    font-weight: 500;
   }
 
   .pills {

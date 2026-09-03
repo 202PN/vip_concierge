@@ -12,14 +12,14 @@ import { serviceGroups } from "../data/services";
 >
   <PageIntro
     title="Services"
-    lede="Armored and executive transportation, plus the concierge services institutional visits require: accommodation, travel arrangement, and document authentication. One professional standard, coordinators on call 24/7."
+    lede="Armored and executive transportation, accommodation, travel arrangement, and document authentication. Coordinators on call 24/7."
     showActions={false}
   />
 
   <section class="directory field-deep">
     <div class="wrap">
       {serviceGroups.map((g) => (
-        <div class="dir-group">
+        <div class="dir-group" id={g.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}>
           <div class="group-head">
             <h2>{g.title}</h2>
             <p class="on-red-soft">{g.blurb}</p>
@@ -40,6 +40,10 @@ import { serviceGroups } from "../data/services";
 <style>
   .directory {
     padding-block: var(--sect);
+  }
+
+  .dir-group {
+    scroll-margin-top: calc(var(--header-h) + 1rem);
   }
 
   .dir-group + .dir-group {

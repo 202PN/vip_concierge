@@ -1,5 +1,9 @@
 # Google Ads setup — VIP Concierge
 
+> **Account IDs (created 2026-08-30)**
+> - GTM container: `GTM-N7KZN6ZT` (already set in `src/layouts/BaseLayout.astro`)
+> - GA4 Measurement ID: `G-RV87215K8S` (used inside GTM only — not in site code)
+
 The site is fully tracking-ready. This guide is the one-time account setup to
 make Google Ads measure real results (bookings and calls), so Google's bidding
 optimizes toward customers instead of clicks.
