@@ -5,20 +5,26 @@
 
   Progressive enhancement: the curtain only appears when the inline script
   below adds `is-loading` to <html> before first paint, so visitors without
-  JavaScript never see a stuck overlay. It plays on every full page load,
-  including refreshes and link clicks; set ONCE_PER_SESSION to true to show
-  it only once per browser tab (tracked in sessionStorage).
+  JavaScript never see a stuck overlay.
+
+  When it plays: on a refresh, and on a fresh entry into the site (typed URL,
+  external link, bookmark). It stays out of the way when the visitor arrives
+  by clicking a link within the site, or via back / forward.
 */
-const ONCE_PER_SESSION = false;
 const MIN_SHOW_MS = 1100; // hold the seal at least this long
 const MAX_WAIT_MS = 5000; // open no matter what after this
 ---
 
-<script is:inline define:vars={{ ONCE_PER_SESSION }}>
+<script is:inline>
   (function () {
+    var nav = performance.getEntriesByType("navigation")[0];
+    var type = nav ? nav.type : "navigate";
+    if (type === "back_forward") return;
+    var internal = false;
     try {
-      if (ONCE_PER_SESSION && sessionStorage.getItem("vip-loader-seen")) return;
+      internal = !!document.referrer && new URL(document.referrer).origin === location.origin;
     } catch (_) {}
+    if (type !== "reload" && internal) return;
     document.documentElement.classList.add("is-loading");
   })();
 </script>
@@ -33,7 +39,7 @@ const MAX_WAIT_MS = 5000; // open no matter what after this
   </div>
 </div>
 
-<script is:inline define:vars={{ ONCE_PER_SESSION, MIN_SHOW_MS, MAX_WAIT_MS }}>
+<script is:inline define:vars={{ MIN_SHOW_MS, MAX_WAIT_MS }}>
   (function () {
     var html = document.documentElement;
     var loader = document.getElementById("site-loader");
@@ -49,9 +55,6 @@ const MAX_WAIT_MS = 5000; // open no matter what after this
     function open() {
       if (opened) return;
       opened = true;
-      try {
-        if (ONCE_PER_SESSION) sessionStorage.setItem("vip-loader-seen", "1");
-      } catch (_) {}
       loader.classList.add("is-open");
       html.classList.remove("is-loading");
       html.classList.add("is-loaded");
