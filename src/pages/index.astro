@@ -35,7 +35,7 @@ const cities = [
   <!-- Hero carousel -->
   <section class="hero" aria-roledescription="carousel" aria-label="VIP Concierge highlights">
     <article class="slide is-active" aria-roledescription="slide" aria-label="1 of 3">
-      <video class="slide-video" src="/capital_traffic-1080.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+      <video class="slide-video" src="/capital_traffic-1080.mp4" poster="/posters/capital_traffic-1080.jpg" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
       <div class="slide-scrim" aria-hidden="true"></div>
       <div class="wrap slide-grid slide-grid-solo">
         <div class="slide-copy">
@@ -59,7 +59,7 @@ const cities = [
     </article>
 
     <article class="slide" aria-roledescription="slide" aria-label="2 of 3" aria-hidden="true">
-      <video class="slide-video" src="/driving_int_bw.mp4" muted loop playsinline preload="metadata" aria-hidden="true"></video>
+      <video class="slide-video" src="/driving_int_bw.mp4" poster="/posters/driving_int_bw.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video>
       <div class="slide-scrim" aria-hidden="true"></div>
       <div class="wrap slide-grid slide-grid-solo">
         <div class="slide-copy">
@@ -67,10 +67,10 @@ const cities = [
           <div class="hero-foot">
             <p class="lede on-red-soft">
               Armored Escalades and Maybachs, executive sedans, and group
-              vehicles up to full coach. Late-model, chauffeured.
+              vehicles up to full coach. Latest-model, chauffeured.
             </p>
             <div class="acts">
-              <a class="btn btn-light" href="/fleet" data-track="hero-fleet">Explore the Fleet</a>
+              <a class="btn btn-light" href="/fleet" data-track="hero-fleet">The Fleet</a>
               <a class="btn btn-ghost" href="/contact" data-track="hero-consult-2">Request a Consultation</a>
             </div>
           </div>
@@ -79,7 +79,7 @@ const cities = [
     </article>
 
     <article class="slide" aria-roledescription="slide" aria-label="3 of 3" aria-hidden="true">
-      <video class="slide-video" src="/traffic_bw.mp4" muted loop playsinline preload="metadata" aria-hidden="true"></video>
+      <video class="slide-video" src="/traffic_bw.mp4" poster="/posters/traffic_bw.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video>
       <div class="slide-scrim" aria-hidden="true"></div>
       <div class="wrap slide-grid">
         <div class="slide-copy">
@@ -87,10 +87,10 @@ const cities = [
           <div class="hero-foot">
             <p class="lede on-red-soft">
               Daily service in the capital region and major U.S. cities.
-              Anywhere else, we arrange it.
+              Anywhere else in the 50 states, on request.
             </p>
             <div class="acts">
-              <a class="btn btn-light" href="/service-areas" data-track="hero-areas">View Service Areas</a>
+              <a class="btn btn-light" href="/service-areas" data-track="hero-areas">Service Areas</a>
               <a class="btn btn-ghost" href="/contact" data-track="hero-consult-3">Request a Consultation</a>
             </div>
           </div>
@@ -178,6 +178,24 @@ const cities = [
     let index = 0;
     let timer: ReturnType<typeof setInterval> | undefined;
 
+    // Phones in Low Power / Data Saver mode refuse autoplay: play() rejects
+    // and the film sits on a still. Remember the refusal and retry on the
+    // visitor's first touch, which counts as the gesture the browser wants.
+    let autoplayBlocked = false;
+    function playFilm(v: HTMLVideoElement) {
+      v.play().catch(() => {
+        autoplayBlocked = true;
+      });
+    }
+    function retryFilm() {
+      if (!autoplayBlocked) return;
+      autoplayBlocked = false;
+      const v = slides[index]?.querySelector("video");
+      if (v && !reducedMotion) playFilm(v);
+    }
+    document.addEventListener("pointerdown", retryFilm, { passive: true });
+    document.addEventListener("keydown", retryFilm);
+
     function go(i: number) {
       index = (i + slides.length) % slides.length;
       slides.forEach((s, n) => {
@@ -186,7 +204,7 @@ const cities = [
         const v = s.querySelector("video");
         if (v) {
           // The films are display:none under reduced motion — never play them.
-          if (n === index && !reducedMotion) v.play().catch(() => {});
+          if (n === index && !reducedMotion) playFilm(v);
           else v.pause();
         }
       });
@@ -245,11 +263,12 @@ const cities = [
       swiping = false;
     });
 
-    if (!reducedMotion) {
-      timer = setInterval(() => go(index + 1), 7000);
-    } else {
-      slides.forEach((s) => s.querySelector("video")?.pause());
-    }
+    // The slides rotate for everyone. Under reduced motion the films are
+    // hidden and the entrance animations are already flattened by the global
+    // reduced-motion rule, so what remains is a plain crossfade of copy; the
+    // dots and arrows still stop the rotation on demand.
+    if (reducedMotion) slides.forEach((s) => s.querySelector("video")?.pause());
+    timer = setInterval(() => go(index + 1), reducedMotion ? 9000 : 7000);
   </script>
 
   <!-- Chancery capability band -->
@@ -283,7 +302,6 @@ const cities = [
           </ul>
         </div>
       ))}
-      <a class="dir-all" href="/services">All services →</a>
     </div>
   </section>
 
@@ -307,7 +325,6 @@ const cities = [
         ))}
       </dl>
       <p class="tbd on-paper-gray">Group vehicle photos available on request.</p>
-      <a class="link" href="/fleet">Full fleet →</a>
     </div>
     <div class="cell" id="service-areas">
       <h2 class="h2"><a class="h-link" href="/service-areas">Service areas</a></h2>
@@ -316,7 +333,6 @@ const cities = [
         major U.S. cities. Anywhere else in the 50 states on request.
       </p>
       <p class="cities">{cities.join(" · ")} · <a href="/contact">+ any city on request</a></p>
-      <a class="link" href="/service-areas">All service areas →</a>
     </div>
   </section>
 
@@ -665,19 +681,6 @@ const cities = [
     padding: 0;
   }
 
-  .dir-all {
-    display: inline-block;
-    margin-top: 2rem;
-    font-weight: 400;
-    font-size: var(--text-lg);
-    text-decoration: none;
-  }
-
-  .dir-all:hover {
-    color: var(--soft);
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
 
   /* Duo */
   .duo {
@@ -752,21 +755,12 @@ const cities = [
     font-weight: 400;
   }
 
-  .link {
-    display: inline-block;
-    margin-top: 1.25rem;
-    font-weight: 400;
-    text-decoration: none;
-    color: var(--ox);
-  }
 
-  .link:hover {
-    color: var(--ink);
-  }
-
+  /* Reduced motion: the films never play (the script keeps them paused), so
+     each slide shows its poster still instead. */
   @media (prefers-reduced-motion: reduce) {
     .slide-video {
-      display: none;
+      animation: none;
     }
   }
 

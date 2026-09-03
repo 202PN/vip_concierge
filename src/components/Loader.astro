@@ -1,7 +1,7 @@
 ---
 /*
-  Site loader — the seal on a dark translucent curtain that parts like a pair
-  of garage doors once the page has loaded.
+  Site loader — the seal centered on a solid ink curtain that parts like a
+  pair of garage doors once the page has loaded.
 
   Progressive enhancement: the curtain only appears when the inline script
   below adds `is-loading` to <html> before first paint, so visitors without
@@ -105,45 +105,63 @@ const MAX_WAIT_MS = 5000; // open no matter what after this
     left: 0;
     right: 0;
     height: 50%;
-    background: rgba(13, 13, 14, 0.82);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
+    background: var(--ink);
     will-change: transform;
     transition: transform 900ms cubic-bezier(0.77, 0, 0.18, 1) 480ms;
   }
 
   .loader .door-top {
     top: 0;
+    height: calc(50% + 1px); /* overlap: no hairline on odd viewport heights */
   }
 
   .loader .door-bottom {
     bottom: 0;
   }
 
-  /* The seam where the two doors meet: a hairline of oxblood that breathes
-     while the page loads, then tears open with the doors. */
+  /* The seam where the two doors meet: two oxblood hairlines running from
+     the screen edges to just short of the seal, breathing while the page
+     loads, then vanishing as the doors part. */
+  .loader {
+    --seal-w: clamp(7.5rem, 22vw, 12rem);
+    --seam-gap: 1rem;
+  }
+
   .loader .seam {
     position: absolute;
     top: 50%;
     left: 50%;
     height: 1px;
-    width: min(60vw, 26rem);
-    transform: translate(-50%, -50%) scaleX(0.35);
-    background: var(--ox-bright);
-    opacity: 0.55;
-    transform-origin: center;
-    animation: seam-breathe 1.8s ease-in-out infinite alternate;
+    width: 100%;
+    transform: translate(-50%, -50%);
     transition: opacity 320ms ease;
   }
 
-  /* Seal and tagline move as one unit, centered on the seam. */
+  .loader .seam::before,
+  .loader .seam::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    height: 1px;
+    width: calc(50% - var(--seal-w) / 2 - var(--seam-gap));
+    background: var(--ox-bright);
+    animation: seam-breathe 1.8s ease-in-out infinite alternate;
+  }
+
+  .loader .seam::before {
+    left: 0;
+  }
+
+  .loader .seam::after {
+    right: 0;
+  }
+
+  /* The seal sits dead center on the screen; the tagline hangs below it
+     without pulling the seal off center. Both move as one unit. */
   .loader .mark {
     position: absolute;
     top: 50%;
     left: 50%;
-    display: grid;
-    justify-items: center;
-    gap: 1.25rem;
     transform: translate(-50%, -50%) scale(1);
     animation: seal-in 720ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
     transition:
@@ -152,12 +170,18 @@ const MAX_WAIT_MS = 5000; // open no matter what after this
   }
 
   .loader .seal {
-    width: clamp(7.5rem, 22vw, 12rem);
+    width: var(--seal-w);
     height: auto;
     filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.55));
   }
 
   .loader .tagline {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 1.5rem;
+    white-space: nowrap;
     font-family: var(--fr);
     font-weight: 300;
     font-size: clamp(0.9375rem, 0.8rem + 0.6vw, 1.1875rem);
@@ -165,7 +189,6 @@ const MAX_WAIT_MS = 5000; // open no matter what after this
     line-height: 1.2;
     color: var(--paper);
     text-align: center;
-    text-wrap: balance;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
   }
 
@@ -202,12 +225,10 @@ const MAX_WAIT_MS = 5000; // open no matter what after this
 
   @keyframes seam-breathe {
     from {
-      transform: translate(-50%, -50%) scaleX(0.35);
-      opacity: 0.35;
+      opacity: 0.3;
     }
     to {
-      transform: translate(-50%, -50%) scaleX(1);
-      opacity: 0.8;
+      opacity: 0.85;
     }
   }
 
@@ -221,7 +242,8 @@ const MAX_WAIT_MS = 5000; // open no matter what after this
       opacity: 0;
     }
     .loader .mark,
-    .loader .seam {
+    .loader .seam::before,
+    .loader .seam::after {
       animation: none;
     }
   }

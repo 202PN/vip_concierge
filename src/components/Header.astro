@@ -38,12 +38,12 @@ const current = Astro.url.pathname;
     <nav class="nav" aria-label="Primary">
       <ul class="nav-list">
         <li class="has-menu">
-          <button type="button" class="menu-trigger" aria-expanded="false" aria-controls="services-menu">
+          <a class="menu-trigger" href="/services" aria-current={current === "/services" ? "page" : undefined}>
             Services
             <svg width="10" height="7" viewBox="0 0 10 7" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M1 1.5 5 5.5 9 1.5"></path>
             </svg>
-          </button>
+          </a>
           <div class="menu" id="services-menu">
             {serviceGroups.map((g) => (
               <div class="menu-group">
@@ -107,8 +107,7 @@ const current = Astro.url.pathname;
   const header = document.querySelector(".site-header");
   const hamburger = header?.querySelector(".hamburger");
   const mobileNav = header?.querySelector<HTMLElement>(".mobile-nav");
-  const trigger = header?.querySelector(".menu-trigger");
-  const menuItem = header?.querySelector(".has-menu");
+  const menuItem = header?.querySelector<HTMLElement>(".has-menu");
 
   hamburger?.addEventListener("click", () => {
     const open = hamburger.getAttribute("aria-expanded") === "true";
@@ -130,23 +129,11 @@ const current = Astro.url.pathname;
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
 
-  trigger?.addEventListener("click", () => {
-    const open = trigger.getAttribute("aria-expanded") === "true";
-    trigger.setAttribute("aria-expanded", String(!open));
-    menuItem?.classList.toggle("open", !open);
-  });
-
-  document.addEventListener("click", (e) => {
-    if (menuItem && !menuItem.contains(e.target as Node)) {
-      menuItem.classList.remove("open");
-      trigger?.setAttribute("aria-expanded", "false");
-    }
-  });
-
+  // "Services" is a real link to /services; the dropdown opens on hover and
+  // on keyboard focus (CSS). Escape drops focus so the menu closes.
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      menuItem?.classList.remove("open");
-      trigger?.setAttribute("aria-expanded", "false");
+    if (e.key === "Escape" && menuItem?.contains(document.activeElement)) {
+      (document.activeElement as HTMLElement | null)?.blur();
     }
   });
 </script>
@@ -363,8 +350,7 @@ const current = Astro.url.pathname;
   }
 
   .has-menu:hover .menu,
-  .has-menu:focus-within .menu,
-  .has-menu.open .menu {
+  .has-menu:focus-within .menu {
     opacity: 1;
     visibility: visible;
     translate: 0 0;
