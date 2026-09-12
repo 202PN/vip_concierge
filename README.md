@@ -19,16 +19,28 @@ self-hosted fonts, optimized for Core Web Vitals.
 ## Project structure
 
 - `src/pages/` — the 12 routes (home, 5 service pages, services hub, fleet, about, service areas, contact, book) plus a custom 404
-- `src/components/` — shared UI (Header, Footer, Seal, GridGlobe, CTABlock, PageIntro, ServiceCard, FleetCard, ContactForm)
+- `src/components/` — shared UI (Header, Footer, Seal, GridGlobe, CTABlock, PageIntro, ServiceCard, FleetCard, ContactForm, Loader)
 - `src/data/services.ts` — the canonical two-group service architecture (Transportation / Concierge Services); feeds nav, footer, home, /services, and the contact form
+- `src/data/fleet.ts` — one record per vehicle (tier, capacity, description, photos); feeds /fleet, the service pages, the home page, and the photo viewer
 - `src/styles/global.css` — the "Chancery" design system (dark ground, oxblood asset color, Libre Franklin)
-- `public/` — logo, favicon, and hero footage
+- `public/` — logo, favicon, hero footage and poster stills, robots.txt
 
-## Before launch (open items)
+## Status
 
-- **Formspree form ID** — `src/components/ContactForm.astro` (form degrades gracefully to phone/WhatsApp until set)
-- **Limo Anywhere ORES alias** — `ORES_ALIAS` in `src/pages/book.astro` (see the setup comment there, incl. Google Ads notes)
-- **GTM container ID** — commented snippet in `src/layouts/BaseLayout.astro` (dataLayer + `cta_click` events already wired)
-- **Google Search Console token & og:image** — TODO comment in `BaseLayout.astro`
-- Fleet photography and passenger capacities (marked `[TBD]` in the UI)
-- Founding year / credential details on About and Armored pages (`[TBD]`)
+Live at https://dcvipconcierge.com since 2026-09-03 (Vercel, static build; DNS and email stay on HostGator).
+
+Verified 2026-09-12:
+
+- **Google Search Console** — domain property verified through a DNS TXT record; no meta tag needed
+- **Google Tag Manager** — container `GTM-N7KZN6ZT` is published with the GA4 tag, the four custom event triggers (`cta_click`, `phone_click`, `whatsapp_click`, `ores_widget_view`), and the Google Ads conversion tag
+- **Booking conversion** — the Limo Anywhere reservation page (`book.mylimobiz.com/v4/vipconcierge`) loads the GA4 measurement ID, so completed bookings are attributed cross-domain
+- **Sitemap and robots.txt** — served at `/sitemap-index.xml` and `/robots.txt`
+
+Account IDs and the campaign playbook are in `GOOGLE-ADS-SETUP.md`.
+
+## Waiting on client assets
+
+- **Social sharing image (og:image)** — a 1200×630 card; commented-out tag in `src/layouts/BaseLayout.astro`
+- **Group vehicle photography** — Party Bus and Coach Bus have no photos yet (`src/data/fleet.ts`); they show "Photos available on request"
+- **Furnished apartment photography** — placeholder frame in `src/pages/furnished-apartments.astro`
+- **Credential and certification documents** — the About and Armored pages say "available on request" until documents are supplied

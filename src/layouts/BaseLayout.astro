@@ -27,10 +27,9 @@ const GTM_ID = "GTM-N7KZN6ZT";
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="generator" content={Astro.generator} />
     <!--
-      TODO before launch:
-      1. Google Search Console — uncomment with the real token:
-         <meta name="google-site-verification" content="..." />
-      2. og:image — add a 1200x630 social card once brand photography exists:
+      Google Search Console is verified as a domain property via a DNS TXT
+      record on dcvipconcierge.com — no meta tag is needed here.
+      TODO: og:image — add a 1200x630 social card once brand photography exists:
          <meta property="og:image" content="https://dcvipconcierge.com/og.jpg" />
     -->
     <link rel="canonical" href={new URL(Astro.url.pathname, "https://dcvipconcierge.com")} />
