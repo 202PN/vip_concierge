@@ -36,8 +36,6 @@ Verified 2026-09-12:
 - **Booking conversion** — the Limo Anywhere reservation page (`book.mylimobiz.com/v4/vipconcierge`) loads the GA4 measurement ID, so completed bookings are attributed cross-domain
 - **Sitemap and robots.txt** — served at `/sitemap-index.xml` and `/robots.txt`
 
-Account IDs and the campaign playbook are in `GOOGLE-ADS-SETUP.md`.
-
 ## Waiting on client assets
 
 - **Social sharing image (og:image)** — a 1200×630 card; commented-out tag in `src/layouts/BaseLayout.astro`
