@@ -4,25 +4,27 @@
   Posts to Formspree form xvkoredy; submissions go to the address set in the
   Formspree dashboard.
   (or point the action at Basin). Fields per client brief.
-  Pills come from the canonical service IA; "Other / General" is the default
-  and ?service=<name> (sent by page CTAs) preselects a specific line.
+  Pills come from the canonical service IA; a service must be chosen (no
+  default) and ?service=<name> (sent by page CTAs) preselects a specific line.
+  "Dates requested" is a multi-select calendar (any number of days, past
+  days disabled) that writes "Oct 3, 2026; Oct 4, 2026" to a hidden input.
 */
 import { allServices } from "../data/services";
 
 const services = [...allServices.map((s) => s.name), "Other / General"];
 ---
 
-<form class="inquiry" action="https://formspree.io/f/xvkoredy" method="POST">
+<form class="inquiry" action="https://formspree.io/f/xvkoredy" method="POST" novalidate>
   <input type="hidden" name="vehicle" value="" />
   <fieldset class="service-select">
-    <legend>Service required</legend>
+    <legend>Service <span class="req">required</span></legend>
     <p class="vehicle-line" hidden>
       Inquiring about <strong class="vehicle-name"></strong>
     </p>
     <div class="pills">
       {services.map((s) => (
         <label class="pill">
-          <input type="radio" name="service" value={s} checked={s === "Other / General"} />
+          <input type="radio" name="service" value={s} required />
           <span>{s}</span>
         </label>
       ))}
@@ -42,16 +44,74 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
       <label for="f-phone">Phone</label>
       <input id="f-phone" name="phone" type="tel" autocomplete="tel" />
     </div>
+    <div class="field">
+      <label for="f-location">Location</label>
+      <input
+        id="f-location"
+        name="location"
+        type="text"
+        autocomplete="address-level2"
+        placeholder="City or address" />
+    </div>
+    <div class="field dates">
+      <label for="f-dates">Dates requested</label>
+      <input type="hidden" name="dates" value="" />
+      <button
+        id="f-dates"
+        class="dates-trigger"
+        type="button"
+        aria-haspopup="dialog"
+        aria-expanded="false"
+        aria-controls="dates-pop">
+        <span class="dates-label">Select dates</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <rect x="1.5" y="3" width="13" height="11.5" />
+          <path d="M1.5 6.5h13M5 1.5V4M11 1.5V4" />
+        </svg>
+      </button>
+      <div id="dates-pop" class="dates-pop" role="dialog" aria-label="Choose dates" hidden>
+        <div class="dates-mode" role="group" aria-label="Selection mode">
+          <button type="button" class="dates-mode-btn is-on" data-mode="days" aria-pressed="true">Individual days</button>
+          <button type="button" class="dates-mode-btn" data-mode="range" aria-pressed="false">Date range</button>
+        </div>
+        <div class="dates-head">
+          <button class="dates-nav dates-prev" type="button" aria-label="Previous month">‹</button>
+          <p class="dates-title" aria-live="polite"></p>
+          <button class="dates-nav dates-next" type="button" aria-label="Next month">›</button>
+        </div>
+        <div class="dates-week" aria-hidden="true">
+          <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+        </div>
+        <div class="dates-grid"></div>
+        <div class="dates-foot">
+          <p class="dates-count">Choose as many days as you need.</p>
+          <div class="dates-acts">
+            <button class="dates-clear" type="button">Clear</button>
+            <button class="btn btn-outline btn-compact dates-done" type="button">Done</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label for="f-passengers">Number of passengers</label>
+      <input
+        id="f-passengers"
+        name="passengers"
+        type="number"
+        inputmode="numeric"
+        min="1"
+        step="1"
+        placeholder="e.g. 4" />
+    </div>
   </div>
 
   <div class="field">
-    <label for="f-message">Message <span class="req">required</span></label>
+    <label for="f-message">Message</label>
     <textarea
       id="f-message"
       name="message"
       rows="6"
-      required
-      placeholder="Dates, itinerary, number of passengers, and any security considerations."></textarea>
+      placeholder="Itinerary, pickup and drop-off details, and any security considerations."></textarea>
   </div>
 
   <div class="submit-row">
@@ -92,6 +152,216 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
     const message = form.querySelector<HTMLTextAreaElement>("#f-message");
     if (message && !message.value) message.value = `Vehicle: ${vehicle}\n\n`;
   }
+  // "Dates requested": a multi-select calendar. Chosen days are written to
+  // the hidden `dates` input as "Oct 3, 2026; Oct 4, 2026" for Formspree.
+  const picker = form?.querySelector<HTMLElement>(".dates");
+  if (picker) {
+    const trigger = picker.querySelector<HTMLButtonElement>(".dates-trigger")!;
+    const labelEl = picker.querySelector<HTMLElement>(".dates-label")!;
+    const pop = picker.querySelector<HTMLElement>(".dates-pop")!;
+    const title = picker.querySelector<HTMLElement>(".dates-title")!;
+    const grid = picker.querySelector<HTMLElement>(".dates-grid")!;
+    const prev = picker.querySelector<HTMLButtonElement>(".dates-prev")!;
+    const next = picker.querySelector<HTMLButtonElement>(".dates-next")!;
+    const clear = picker.querySelector<HTMLButtonElement>(".dates-clear")!;
+    const done = picker.querySelector<HTMLButtonElement>(".dates-done")!;
+    const count = picker.querySelector<HTMLElement>(".dates-count")!;
+    const hidden = picker.querySelector<HTMLInputElement>('input[name="dates"]')!;
+    const modeBtns = [...picker.querySelectorAll<HTMLButtonElement>(".dates-mode-btn")];
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const thisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    let view = new Date(thisMonth);
+    const selected = new Set<string>(); // YYYY-MM-DD keys
+    let mode: "days" | "range" = "days";
+    let rangeStart: string | null = null; // first click of a range, awaiting the second
+
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const key = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const fromKey = (k: string) => {
+      const [y, m, d] = k.split("-").map(Number);
+      return new Date(y, m - 1, d);
+    };
+    const fmtLong = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" });
+    const fmtShort = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" });
+    const fmtMonth = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" });
+
+    const DAY = 86_400_000;
+    // Group the selected days into consecutive runs so "Sep 14–18" reads as one
+    // range rather than five dates.
+    function runs(list: Date[]) {
+      const out: { from: Date; to: Date; days: number }[] = [];
+      for (const d of list) {
+        const last = out[out.length - 1];
+        if (last && d.getTime() - last.to.getTime() === DAY) {
+          last.to = d;
+          last.days++;
+        } else out.push({ from: d, to: d, days: 1 });
+      }
+      return out;
+    }
+    const spanText = (r: { from: Date; to: Date; days: number }, f: Intl.DateTimeFormat) =>
+      r.days === 1 ? f.format(r.from) : `${f.format(r.from)} – ${f.format(r.to)}`;
+
+    function hint() {
+      if (mode === "range") return rangeStart ? "Now choose the last day." : "Choose the first day, then the last.";
+      return "Choose as many days as you need.";
+    }
+
+    function sync() {
+      const list = [...selected].sort().map(fromKey);
+      const groups = runs(list);
+      hidden.value = groups.map((r) => spanText(r, fmtLong)).join("; ");
+      trigger.classList.toggle("has-value", list.length > 0);
+      if (!list.length) {
+        labelEl.textContent = "Select dates";
+        count.textContent = hint();
+        return;
+      }
+      const shown = groups.slice(0, 3).map((r) => spanText(r, fmtShort)).join(", ");
+      const rest = groups.slice(3).reduce((n, r) => n + r.days, 0);
+      labelEl.textContent = rest ? `${shown} +${rest} more` : shown;
+      count.textContent = rangeStart
+        ? hint()
+        : `${list.length} ${list.length === 1 ? "day" : "days"} selected`;
+    }
+
+    // Add every day from a to b (either order) to the selection.
+    function addRange(a: string, b: string) {
+      let from = fromKey(a < b ? a : b);
+      const to = fromKey(a < b ? b : a);
+      for (; from <= to; from = new Date(from.getTime() + DAY)) selected.add(key(from));
+    }
+
+    // Hover preview while a range start is waiting for its end.
+    function preview(hover: string | null) {
+      for (const b of grid.querySelectorAll<HTMLButtonElement>("button[data-key]")) {
+        const k = b.dataset.key!;
+        const on =
+          !!rangeStart && !!hover && k >= (rangeStart < hover ? rangeStart : hover) && k <= (rangeStart < hover ? hover : rangeStart);
+        b.classList.toggle("preview", on);
+      }
+    }
+
+    function setMode(next: "days" | "range") {
+      mode = next;
+      rangeStart = null;
+      for (const b of modeBtns) {
+        const on = b.dataset.mode === next;
+        b.classList.toggle("is-on", on);
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      }
+      sync();
+      render();
+    }
+
+    function render() {
+      title.textContent = fmtMonth.format(view);
+      grid.innerHTML = "";
+      const lead = view.getDay();
+      const days = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
+      for (let i = 0; i < lead; i++) grid.appendChild(document.createElement("span"));
+      for (let d = 1; d <= days; d++) {
+        const date = new Date(view.getFullYear(), view.getMonth(), d);
+        const k = key(date);
+        const b = document.createElement("button");
+        b.type = "button";
+        b.textContent = String(d);
+        b.dataset.key = k;
+        b.setAttribute("aria-label", fmtLong.format(date));
+        b.setAttribute("aria-pressed", selected.has(k) ? "true" : "false");
+        if (date < today) b.disabled = true;
+        if (k === key(today)) b.classList.add("today");
+        if (selected.has(k)) b.classList.add("on");
+        if (k === rangeStart) b.classList.add("start");
+        grid.appendChild(b);
+      }
+      prev.disabled = view <= thisMonth;
+    }
+
+    function open() {
+      pop.hidden = false;
+      trigger.setAttribute("aria-expanded", "true");
+      render();
+    }
+    function close(refocus = false) {
+      pop.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+      if (rangeStart) {
+        rangeStart = null; // an unfinished range is dropped on close
+        sync();
+      }
+      if (refocus) trigger.focus();
+    }
+
+    trigger.addEventListener("click", () => (pop.hidden ? open() : close()));
+    done.addEventListener("click", () => close(true));
+    for (const b of modeBtns) b.addEventListener("click", () => setMode(b.dataset.mode as "days" | "range"));
+    clear.addEventListener("click", () => {
+      selected.clear();
+      rangeStart = null;
+      sync();
+      render();
+    });
+    prev.addEventListener("click", () => {
+      view = new Date(view.getFullYear(), view.getMonth() - 1, 1);
+      render();
+    });
+    next.addEventListener("click", () => {
+      view = new Date(view.getFullYear(), view.getMonth() + 1, 1);
+      render();
+    });
+    grid.addEventListener("click", (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>("button[data-key]");
+      if (!b || b.disabled) return;
+      const k = b.dataset.key!;
+      if (mode === "range") {
+        if (!rangeStart) {
+          rangeStart = k;
+        } else {
+          addRange(rangeStart, k);
+          rangeStart = null;
+        }
+        sync();
+        render();
+        return;
+      }
+      if (selected.has(k)) selected.delete(k);
+      else selected.add(k);
+      b.classList.toggle("on", selected.has(k));
+      b.setAttribute("aria-pressed", selected.has(k) ? "true" : "false");
+      sync();
+    });
+    grid.addEventListener("mouseover", (e) => {
+      if (!rangeStart) return;
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>("button[data-key]");
+      preview(b && !b.disabled ? b.dataset.key! : null);
+    });
+    grid.addEventListener("mouseleave", () => preview(null));
+    picker.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !pop.hidden) {
+        e.preventDefault();
+        close(true);
+      }
+    });
+    document.addEventListener("click", (e) => {
+      // composedPath() is fixed at dispatch, so a day button the grid just
+      // re-rendered away still counts as inside the picker.
+      if (!pop.hidden && !e.composedPath().includes(picker)) close();
+    });
+    form?.addEventListener("reset", () => {
+      selected.clear();
+      rangeStart = null;
+      view = new Date(thisMonth);
+      close();
+      // reset clears the hidden input after this handler; re-sync afterwards
+      requestAnimationFrame(sync);
+    });
+
+    sync();
+  }
+
   const status = form?.querySelector<HTMLElement>(".form-status");
   const submit = form?.querySelector<HTMLButtonElement>("button[type=submit]");
 
@@ -101,9 +371,67 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
     status.classList.toggle("ok", kind === "ok");
     status.innerHTML = html;
   }
+  function hide() {
+    if (status) status.hidden = true;
+  }
+
+  // Required-field check. The form carries `novalidate` so the message lands
+  // in the status band beside the submit button instead of a browser tooltip.
+  const serviceSet = form?.querySelector<HTMLElement>(".service-select");
+  const emailInput = form?.querySelector<HTMLInputElement>("#f-email");
+  let validationShown = false;
+
+  function problems(): { text: string; focus: HTMLElement | null }[] {
+    const out: { text: string; focus: HTMLElement | null }[] = [];
+    if (form && !form.querySelector('input[name="service"]:checked')) {
+      out.push({ text: "choose a service", focus: form.querySelector('input[name="service"]') });
+    }
+    if (emailInput) {
+      if (!emailInput.value.trim()) out.push({ text: "enter your email", focus: emailInput });
+      else if (!emailInput.checkValidity()) out.push({ text: "enter a valid email address", focus: emailInput });
+    }
+    return out;
+  }
+
+  function mark(list: ReturnType<typeof problems>) {
+    const serviceBad = list.some((p) => p.text === "choose a service");
+    const emailBad = list.some((p) => p.text.includes("email"));
+    serviceSet?.classList.toggle("is-invalid", serviceBad);
+    emailInput?.setAttribute("aria-invalid", emailBad ? "true" : "false");
+  }
+
+  function validate(): boolean {
+    const list = problems();
+    mark(list);
+    if (!list.length) {
+      if (validationShown) hide();
+      validationShown = false;
+      return true;
+    }
+    const parts = list.map((p) => p.text);
+    const sentence =
+      parts.length === 1 ? parts[0] : `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
+    show("error", `Please ${sentence} before sending.`);
+    validationShown = true;
+    return false;
+  }
+
+  // Once a message is showing, re-check as the visitor fixes the fields so
+  // the highlights and the message clear on their own.
+  form?.addEventListener("change", () => {
+    if (validationShown) validate();
+  });
+  emailInput?.addEventListener("input", () => {
+    if (validationShown) validate();
+  });
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    if (!validate()) {
+      problems()[0]?.focus?.focus();
+      return;
+    }
 
     if (submit) {
       submit.disabled = true;
@@ -214,7 +542,7 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.25rem;
   }
 
@@ -235,9 +563,15 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
     margin-left: 0.25rem;
   }
 
+  legend .req {
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
   input[type="text"],
   input[type="email"],
   input[type="tel"],
+  input[type="number"],
   textarea {
     font: inherit;
     font-size: var(--text-base);
@@ -260,6 +594,16 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
     border-color: var(--ox);
   }
 
+  /* Required-field misses: oxblood border on the input, oxblood pill
+     outlines on the service group, until the visitor fixes them. */
+  input[aria-invalid="true"] {
+    border-color: var(--ox);
+  }
+
+  .service-select.is-invalid .pill input:not(:checked) + span {
+    border-color: var(--ox);
+  }
+
   textarea {
     resize: vertical;
     min-height: 8rem;
@@ -268,6 +612,253 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
   ::placeholder {
     color: var(--gray);
     opacity: 1;
+  }
+
+  /* ---- Dates requested: multi-select calendar ---- */
+  .dates {
+    position: relative;
+  }
+
+  .dates-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    min-width: 0;
+    font: inherit;
+    font-size: var(--text-base);
+    text-align: left;
+    padding: 0.7rem 0.9rem;
+    border: 2px solid var(--line-paper);
+    border-radius: 0;
+    background: var(--paper);
+    color: var(--gray);
+    cursor: pointer;
+    transition: border-color 140ms ease-out;
+  }
+
+  .dates-trigger.has-value {
+    color: var(--ink);
+  }
+
+  .dates-trigger:hover {
+    border-color: var(--ink);
+  }
+
+  .dates-trigger:focus-visible,
+  .dates-trigger[aria-expanded="true"] {
+    outline: 0;
+    border-color: var(--ox);
+  }
+
+  .dates-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dates-trigger svg {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    color: var(--ink);
+  }
+
+  .dates-pop {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    left: 0;
+    z-index: 20;
+    width: min(20rem, calc(100vw - 2.5rem));
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 0 16px 40px rgba(13, 13, 14, 0.18);
+  }
+
+  .dates-pop[hidden] {
+    display: none;
+  }
+
+  .dates-mode {
+    display: flex;
+    border: 2px solid var(--line-paper);
+  }
+
+  .dates-mode-btn {
+    flex: 1;
+    font: inherit;
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.45rem 0.5rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--gray);
+    cursor: pointer;
+    transition: background-color 140ms ease-out, color 140ms ease-out;
+  }
+
+  .dates-mode-btn:hover {
+    color: var(--ink);
+  }
+
+  .dates-mode-btn.is-on {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .dates-mode-btn:focus-visible {
+    outline: 3px solid var(--ox);
+    outline-offset: -3px;
+  }
+
+  .dates-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .dates-title {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .dates-nav {
+    width: 2rem;
+    height: 2rem;
+    font: inherit;
+    font-size: 1.25rem;
+    line-height: 1;
+    border: 2px solid var(--line-paper);
+    border-radius: 0;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .dates-nav:hover:not(:disabled) {
+    border-color: var(--ink);
+  }
+
+  .dates-nav:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .dates-week,
+  .dates-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+
+  .dates-week span {
+    text-align: center;
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray);
+    padding-bottom: 0.25rem;
+  }
+
+  .dates-grid :global(button) {
+    aspect-ratio: 1;
+    padding: 0;
+    font: inherit;
+    font-size: var(--text-sm);
+    border: 2px solid transparent;
+    border-radius: 0;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 140ms ease-out, background-color 140ms ease-out,
+      color 140ms ease-out;
+  }
+
+  .dates-grid :global(button):hover:not(:disabled) {
+    border-color: var(--ink);
+  }
+
+  .dates-grid :global(button).today {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .dates-grid :global(button).preview {
+    background: rgba(122, 0, 0, 0.12);
+  }
+
+  .dates-grid :global(button).start {
+    border-color: var(--ox);
+    color: var(--ox);
+    font-weight: 500;
+  }
+
+  .dates-grid :global(button).on {
+    background: var(--ox);
+    border-color: var(--ox);
+    color: var(--paper);
+    font-weight: 500;
+  }
+
+  .dates-grid :global(button):disabled {
+    color: var(--gray);
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .dates-grid :global(button):focus-visible {
+    outline: 3px solid var(--ox);
+    outline-offset: -3px;
+  }
+
+  .dates-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line-paper);
+  }
+
+  .dates-count {
+    font-size: var(--text-xs);
+    color: var(--gray);
+    margin: 0;
+  }
+
+  .dates-acts {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .dates-done {
+    padding: 0.5rem 1rem;
+  }
+
+  .dates-clear {
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--ox);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .dates-clear:hover {
+    text-decoration: underline;
   }
 
   .submit-row {
