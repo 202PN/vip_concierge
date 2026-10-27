@@ -4,6 +4,34 @@ import GridGlobe from "../components/GridGlobe.astro";
 import ServiceCard from "../components/ServiceCard.astro";
 import CTABlock from "../components/CTABlock.astro";
 import { serviceGroups } from "../data/services";
+import { clients, type ClientLogo } from "../data/clients";
+import MayoLogo from "../assets/clients/mayo.svg";
+import HssLogo from "../assets/clients/hss.svg";
+import BmcLogo from "../assets/clients/bmc.svg";
+import ChildrensLogo from "../assets/clients/childrens.svg";
+import HopkinsLogo from "../assets/clients/hopkins.svg";
+import AfosiLogo from "../assets/clients/afosi.svg";
+import UaeLogo from "../assets/clients/uae.svg";
+import QatarEmbassyLogo from "../assets/clients/qatar-embassy.svg";
+import QatarConsulateLogo from "../assets/clients/qatar-consulate.svg";
+import SuitePlaceLogo from "../assets/clients/suiteplace.svg";
+import AqraLogo from "../assets/clients/aqra.svg";
+import SuiteSolutionsLogo from "../assets/clients/suitesolutions.svg";
+
+const clientLogos: Record<ClientLogo, typeof MayoLogo> = {
+  mayo: MayoLogo,
+  hss: HssLogo,
+  bmc: BmcLogo,
+  childrens: ChildrensLogo,
+  hopkins: HopkinsLogo,
+  afosi: AfosiLogo,
+  uae: UaeLogo,
+  "qatar-embassy": QatarEmbassyLogo,
+  "qatar-consulate": QatarConsulateLogo,
+  suiteplace: SuitePlaceLogo,
+  aqra: AqraLogo,
+  suitesolutions: SuiteSolutionsLogo,
+};
 import { byTier, type Tier } from "../data/fleet";
 
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
@@ -280,6 +308,141 @@ const cities = [
       <li><a href="/service-areas">24/7, all 50 states</a></li>
     </ul>
   </section>
+
+  <!-- Client register: who we serve, by sector -->
+  <section class="clients field-ink" id="clients" aria-labelledby="clients-title">
+    <div class="wrap">
+      <h2 class="h2" id="clients-title">Clients</h2>
+      <p class="dir-lede on-red-soft">
+        Embassies, hospitals, and companies have trusted us with their
+        people since 2014.
+      </p>
+    </div>
+    <!-- Full-bleed strip: the register runs twice end to end so the loop is
+         seamless; the second pass is decorative and hidden from assistive tech. -->
+    <div class="marquee">
+      <div class="marquee-track">
+        {[false, true].map((copy) => (
+          <ul class="wall" aria-hidden={copy ? "true" : undefined}>
+            {clients.map((c) => {
+              const Logo = c.logo && clientLogos[c.logo];
+              return (
+                <li class="wall-cell">
+                  <div class="wall-mark">
+                    {Logo ? (
+                      <Logo class={`logo logo-${c.logo}`} role="img" aria-label={c.name} />
+                    ) : (
+                      <span class="wordmark">
+                        <span class="wm-title">{c.mark?.title}</span>
+                        {c.mark?.sub && <span class="wm-sub">{c.mark.sub}</span>}
+                      </span>
+                    )}
+                  </div>
+                  <span class="wall-place">
+                    {c.note && <span class="wall-note">{c.note}</span>}
+                    {c.place}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Client strip: drifts left on its own and can be dragged either way.
+    // A release coasts on the throw's momentum, then eases back to the drift.
+    // Under reduced motion none of this runs; the strip scrolls natively.
+    const strip = document.querySelector<HTMLElement>(".marquee");
+    const track = strip?.querySelector<HTMLElement>(".marquee-track");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (strip && track && !reduced) {
+      const phone = window.matchMedia("(max-width: 720px)");
+      const cells = track.querySelectorAll(".wall:first-child .wall-cell").length;
+      let loop = 0; // width of one pass; the second pass makes the wrap seamless
+      let offset = 0;
+      let throwV = 0; // px/s left over from a release
+      let dragging = false;
+      let hovering = false;
+      let visible = true;
+      let lastX = 0;
+      let lastT = 0;
+      let prev = 0;
+
+      const measure = () => {
+        loop = track.querySelector<HTMLElement>(".wall")?.offsetWidth ?? 0;
+      };
+      // Same pace per client as the old CSS loop: 2.9s each, 2.15s on phones.
+      const drift = () => (loop ? loop / (cells * (phone.matches ? 2.15 : 2.9)) : 0);
+
+      function frame(now: number) {
+        const dt = Math.min((now - prev) / 1000, 0.05);
+        prev = now;
+        if (!dragging) {
+          offset += ((hovering ? 0 : drift()) + throwV) * dt;
+          throwV *= Math.exp(-dt * 3.5);
+        }
+        if (loop) offset = ((offset % loop) + loop) % loop;
+        track!.style.translate = `${-offset}px 0`;
+        if (visible) requestAnimationFrame(frame);
+      }
+
+      function start() {
+        prev = performance.now();
+        requestAnimationFrame(frame);
+      }
+
+      strip.addEventListener("pointerenter", (e) => {
+        if (e.pointerType === "mouse") hovering = true;
+      });
+      strip.addEventListener("pointerleave", (e) => {
+        if (e.pointerType === "mouse") hovering = false;
+      });
+
+      strip.addEventListener("pointerdown", (e) => {
+        dragging = true;
+        throwV = 0;
+        lastX = e.clientX;
+        lastT = e.timeStamp;
+        strip.setPointerCapture(e.pointerId);
+        strip.classList.add("is-dragging");
+      });
+      strip.addEventListener("pointermove", (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - lastX;
+        const dt = Math.max((e.timeStamp - lastT) / 1000, 0.001);
+        offset -= dx;
+        // Smoothed so one jittery sample can't fling the strip
+        throwV = 0.7 * (-dx / dt) + 0.3 * throwV;
+        lastX = e.clientX;
+        lastT = e.timeStamp;
+      });
+      const release = (e: PointerEvent) => {
+        if (!dragging) return;
+        dragging = false;
+        strip.classList.remove("is-dragging");
+        // A pause before letting go means a placement, not a throw.
+        if (e.timeStamp - lastT > 80) throwV = 0;
+        throwV = Math.max(-2500, Math.min(2500, throwV));
+      };
+      strip.addEventListener("pointerup", release);
+      strip.addEventListener("pointercancel", release);
+
+      // Only animate while the strip is on screen.
+      new IntersectionObserver(([entry]) => {
+        const was = visible;
+        visible = entry.isIntersecting;
+        if (visible && !was) start();
+      }).observe(strip);
+
+      new ResizeObserver(measure).observe(track);
+      measure();
+      start();
+    }
+  </script>
 
   <!-- Services directory: Transportation + Concierge -->
   <section class="directory field-deep" id="services">
@@ -619,17 +782,20 @@ const cities = [
   }
 
   /* Directory */
-  .directory {
+  .directory,
+  .clients {
     padding-block: var(--sect);
   }
 
   .directory,
+  .clients,
   .cell {
     scroll-margin-top: var(--header-h);
   }
 
   /* Section heads: a chapter-scale step above the group heads below them,
      opened with the heavy rule so each section announces itself. */
+  .clients .h2,
   .directory .h2,
   .cell .h2 {
     font-size: clamp(2rem, 1.4rem + 2.8vw, 3.5rem);
@@ -645,6 +811,7 @@ const cities = [
   .dir-lede {
     max-width: 54ch;
     margin-top: 0.9rem;
+    text-wrap: pretty;
   }
 
   .dir-group {
@@ -671,6 +838,171 @@ const cities = [
   .dir-list {
     list-style: none;
     padding: 0;
+  }
+
+  /* Client strip: open, unboxed marks running edge to edge, drifting left
+     on a loop and feathered out at both margins. Logos and typeset
+     wordmarks share one ink so the set reads as a single register; each
+     carries its city beneath. */
+  .marquee {
+    margin-top: clamp(2.25rem, 4.5vw, 3.5rem);
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    will-change: translate;
+  }
+
+  /* Drift and drag are driven by the script; vertical swipes still scroll
+     the page on touch screens. */
+  @media (prefers-reduced-motion: no-preference) {
+    .marquee {
+      cursor: grab;
+      touch-action: pan-y;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .marquee.is-dragging {
+      cursor: grabbing;
+    }
+  }
+
+  /* Cells take fixed widths, not flex-basis: WebKit (every iOS browser)
+     sizes a max-content flex row from its items' content and ignores
+     flex-basis, which let the looping second pass overlap the first. */
+  .wall {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex: none;
+  }
+
+  .wall-cell {
+    flex: none;
+    width: clamp(13rem, 20vw, 17.5rem);
+    display: grid;
+    grid-template-rows: 1fr auto;
+    min-height: clamp(8.5rem, 11vw, 10rem);
+    padding: 0.5rem 1.25rem;
+    justify-items: center;
+  }
+
+  .wall-mark {
+    display: grid;
+    place-items: center;
+    padding-block: 0.75rem;
+    color: var(--paper);
+    opacity: 0.8;
+  }
+
+  /* Optical sizing: every mark gets roughly the same visual area, anchored
+     on the AFOSI emblem (~22,000px² at full size), so wide logos sit shorter
+     and square ones taller. Solid, heavy marks are trimmed since they read
+     larger than their box. --w is each logo's full-size width in px; all
+     scale together from 62% on small screens to full at 1440px. */
+  .logo {
+    display: block;
+    height: auto;
+    width: clamp(calc(var(--w) * 0.62px), calc(var(--w) * 100vw / 1440), calc(var(--w) * 1px));
+  }
+
+  .logo-afosi {
+    --w: 152;
+  }
+
+  .logo-qatar-consulate {
+    --w: 145;
+  }
+
+  .logo-qatar-embassy {
+    --w: 142;
+  }
+
+  .logo-childrens {
+    --w: 151;
+  }
+
+  .logo-mayo {
+    --w: 138;
+  }
+
+  .logo-hss {
+    --w: 111;
+  }
+
+  /* Fine serif lettering and a thin frame read light; given a little more */
+  .logo-hopkins {
+    --w: 212;
+  }
+
+  .logo-bmc {
+    --w: 230;
+  }
+
+  .logo-suiteplace {
+    --w: 203;
+  }
+
+  .logo-aqra {
+    --w: 194;
+  }
+
+  /* Very wide (3.2:1); equal area would overrun the cell, so it fills the
+     cell's width instead */
+  .logo-suitesolutions {
+    --w: 240;
+  }
+
+  /* Emblem-and-name lockup: kept at its own larger size, in a wider cell,
+     so its three lines of type stay legible */
+  .logo-uae {
+    width: clamp(14rem, 20vw, 18rem);
+  }
+
+  .wall-cell:has(.logo-uae) {
+    width: clamp(17rem, 27vw, 23rem);
+  }
+
+  .wordmark {
+    display: grid;
+    justify-items: center;
+    gap: 0.45rem;
+    text-align: center;
+  }
+
+  .wm-title {
+    font-size: clamp(1.35rem, 1rem + 1.1vw, 2rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+
+  .wm-sub {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .wall-place {
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+    text-align: center;
+    color: var(--soft-ink);
+    opacity: 0.75;
+  }
+
+  /* Office named above the city when the emblem alone doesn't say */
+  .wall-note {
+    display: block;
+    margin-bottom: 0.2rem;
+    color: var(--paper);
+    white-space: pre-line;
+    text-wrap: balance;
   }
 
 
@@ -750,6 +1082,16 @@ const cities = [
     .slide-video {
       animation: none;
     }
+
+    /* The client strip holds still and scrolls by hand; one pass only. */
+    .marquee {
+      overflow-x: auto;
+      mask-image: none;
+    }
+
+    .wall[aria-hidden="true"] {
+      display: none;
+    }
   }
 
   @media (max-width: 980px) {
@@ -796,6 +1138,7 @@ const cities = [
       grid-template-columns: 1fr;
     }
 
+
     .cell + .cell {
       border-left: 0;
       border-top: 3px solid var(--ink);
@@ -807,6 +1150,16 @@ const cities = [
   @media (max-width: 720px) {
     .arrow {
       display: none;
+    }
+
+    .wall-cell {
+      width: 11.5rem;
+      min-height: 8rem;
+      padding-inline: 0.9rem;
+    }
+
+    .wm-sub {
+      letter-spacing: 0.12em;
     }
   }
 

@@ -1,65 +1,88 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageIntro from "../components/PageIntro.astro";
 import CTABlock from "../components/CTABlock.astro";
 
-const commitments = [
+/*
+  The pillars, in the client deck's reading order (three columns, two rows).
+  SWaM is the featured card; the dedication card leads with its figure.
+*/
+interface Pillar {
+  title: string;
+  body?: string;
+  kind?: "swam" | "figure";
+}
+
+const pillars: Pillar[] = [
   {
-    title: "Discretion",
-    body: "Client identities, itineraries, and movements are never discussed, marketed, or disclosed.",
+    title: "High-quality ground transportation",
+    body: "Relentless commitment to operational excellence and premium vehicle standards.",
   },
   {
-    title: "Capability",
-    body: "Level 6 armored vehicles, certified executive-security chauffeurs, and an operations desk experienced in embassy, delegation, and government movements. Credentials and licensing details available on request.",
+    title: "All-in-one concierge",
+    body: "Exclusive end-to-end bespoke services tailored to each customer.",
   },
   {
-    title: "Reliability",
-    body: "A live coordinator answers 24/7. Schedules are confirmed, vehicles arrive early, and changes are handled immediately.",
+    title: "Operational peace of mind",
+    body: "Management of processes, daily hassles, and security so clients can relax.",
+  },
+  {
+    title: "Multicultural services & elite track record",
+    body: "Over a decade of trusted experience serving diplomatic, corporate, and VIP clients.",
+  },
+  {
+    title: "Virginia SWaM certified",
+    body: "We are officially certified by the Virginia Department of Small Business and Supplier Diversity as a minority-owned small business.",
+    kind: "swam",
+  },
+  {
+    title: "Dedication to the highest quality of client service",
+    kind: "figure",
   },
 ];
 ---
 
 <BaseLayout
-  title="About — An Institutional Logistics & Security Partner | VIP Concierge"
-  description="VIP Concierge is a McLean, Virginia transportation and concierge company serving government, corporate, and diplomatic clients with armored fleets, certified security chauffeurs, and 24/7 operations."
+  title="About — Over 14 Years of Transportation & Concierge Excellence | VIP Concierge"
+  description="Premium ground transportation and all-in-one concierge services for diplomatic, corporate, and VIP clients. A Virginia SWaM certified minority-owned small business."
 >
-  <PageIntro
-    title="An institutional partner"
-    lede="We serve governments, corporations, and diplomatic missions in Washington and nationwide."
-    showActions={false}
-  />
-
-  <section class="philosophy field-paper">
-    <div class="wrap philosophy-grid">
-      <div class="copy">
-        <h2 class="h2">How we work</h2>
-        <p class="lead-p">
-          Every engagement is planned in advance: assessment, movement plan,
-          vehicle. Schedules hold and itineraries stay confidential.
-        </p>
-        <p class="on-paper-gray">
-          Established in 2014, we operate from McLean, Virginia, minutes from
-          Washington's institutions, handling armored and executive
-          transportation, accommodation, travel, and document services.
-        </p>
+  <section class="about-intro">
+    <div class="wrap intro-grid">
+      <div class="intro-copy">
+        <p class="eyebrow">About us</p>
+        <h1>Over 14 years of premier transportation &amp; concierge excellence</h1>
       </div>
-      <div class="emblem" aria-hidden="true">
-        <img class="about-seal" src="/vip_red.png" alt="" width="200" height="200" loading="lazy" />
-      </div>
+      <img class="about-seal" src="/vip_red.png" alt="" width="200" height="200" />
     </div>
   </section>
 
-  <section class="commitments field-deep">
+  <section class="pillars field-paper" aria-label="What sets us apart">
     <div class="wrap">
-      <h2 class="h2">Our standards</h2>
-      <dl class="commit-list">
-        {commitments.map((c) => (
-          <div class="commit-row">
-            <dt>{c.title}</dt>
-            <dd class="on-red-soft">{c.body}</dd>
-          </div>
+      <ul class="cards">
+        {pillars.map((p) => (
+          <li class:list={["card", p.kind && `card-${p.kind}`]}>
+            {p.kind === "figure" && (
+              <span class="figure" aria-hidden="true">100%</span>
+            )}
+            <h2 class="card-title">
+              {p.kind === "figure" && <span class="visually-hidden">100% </span>}
+              {p.title}
+              {p.kind === "swam" && (
+                <svg class="check" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                  <rect x="1.25" y="1.25" width="23.5" height="23.5"></rect>
+                  <path d="M6.5 13.5 L11 18 L19.5 8"></path>
+                </svg>
+              )}
+            </h2>
+            {p.body && <p class="card-body">{p.body}</p>}
+            {p.kind === "swam" && (
+              <div class="cert">
+                <span class="cert-label">SWaM certificate number</span>
+                <span class="cert-number">721996</span>
+              </div>
+            )}
+          </li>
         ))}
-      </dl>
+      </ul>
     </div>
   </section>
 
@@ -67,78 +90,192 @@ const commitments = [
 </BaseLayout>
 
 <style>
-  .philosophy {
-    padding-block: var(--sect);
+  /* Intro: tracked oxblood eyebrow, the headline in the display face, closed
+     by the heavy rule; the seal holds the right margin. */
+  .about-intro {
+    padding-block: clamp(3rem, 6vw, 5.5rem) clamp(2.5rem, 5vw, 4rem);
   }
 
-  .philosophy-grid {
+  .intro-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
-    gap: 3rem;
-    align-items: center;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: end;
   }
 
-  h2 {
-    margin-bottom: 1.25rem;
+  .intro-copy {
+    border-bottom: 3px solid var(--ox-bright);
+    padding-bottom: clamp(1.75rem, 3.5vw, 2.75rem);
   }
 
-  .lead-p {
-    font-size: var(--text-lg);
-    font-weight: 450;
-    max-width: 58ch;
-    margin-bottom: 1rem;
+  .eyebrow {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ox-bright);
+    margin-bottom: clamp(1rem, 2vw, 1.5rem);
   }
 
-  .copy p {
-    max-width: 60ch;
+  h1 {
+    font-size: clamp(2.25rem, 1rem + 4.2vw, 4.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    max-width: 20ch;
   }
 
-
-  .emblem {
-    display: grid;
-    place-items: center;
+  .about-seal {
+    width: clamp(8rem, 14vw, 12.5rem);
+    height: auto;
   }
 
-  .commitments {
+  /* Cards: white square-cornered panels on the warm paper ground, each opened
+     by the oxblood rule; the grid keeps the deck's three-by-two arrangement. */
+  .pillars {
     padding-block: var(--sect);
+    background: var(--paper-dim);
   }
 
-  .commit-list {
+  .cards {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .card {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    padding: clamp(1.5rem, 2.5vw, 2.25rem);
+    background: var(--paper);
+    border: 1px solid var(--line-paper);
     border-top: 3px solid var(--ox-bright);
-    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    box-shadow: 0 1px 2px rgba(13, 13, 14, 0.04);
+    transition: translate 450ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 450ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .commit-row {
-    display: grid;
-    grid-template-columns: minmax(10rem, 16rem) 1fr;
-    gap: 2rem;
-    padding-block: 1.5rem;
-    border-bottom: 1px solid var(--line-onink);
+  /* Hover: the card lifts onto a soft shadow, then drifts gently while the
+     pointer rests on it. The lift (translate) and the drift (transform) are
+     separate properties so they compose. Pointer devices only. */
+  @media (hover: hover) {
+    .card:hover {
+      translate: 0 -6px;
+      box-shadow: 0 22px 40px -22px rgba(13, 13, 14, 0.35);
+      animation: card-float 3.2s ease-in-out 450ms infinite;
+    }
   }
 
-  .commit-row dt {
+  @keyframes card-float {
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+
+  .card-title {
     font-size: var(--text-h3);
     font-weight: 400;
+    line-height: 1.2;
     letter-spacing: -0.01em;
+    /* Balanced wrapping splits "All-in-one" at its hyphen */
+    text-wrap: pretty;
   }
 
-  .commit-row dd {
-    max-width: 62ch;
+  .card-body {
+    color: var(--gray);
+    max-width: 44ch;
   }
 
-  @media (max-width: 860px) {
-    .philosophy-grid {
+  /* SWaM: the featured card, on the oxblood field, its certificate number
+     set in a black plate as in the deck. */
+  .card-swam {
+    background: var(--ox);
+    color: var(--paper);
+    border-color: var(--ox);
+    border-top-color: var(--ink);
+  }
+
+  .card-swam .card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .check {
+    flex: none;
+  }
+
+  .card-swam .card-body {
+    color: var(--soft);
+  }
+
+  .cert {
+    display: grid;
+    gap: 0.35rem;
+    justify-items: center;
+    margin-top: 0.5rem;
+    padding: 1.1rem 1.25rem;
+    background: var(--ink);
+    text-align: center;
+  }
+
+  .cert-label {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--soft);
+  }
+
+  .cert-number {
+    font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Dedication: no body copy in the deck, so the figure carries the card */
+  .card-figure {
+    align-content: center;
+  }
+
+  .figure {
+    font-size: clamp(3.5rem, 2rem + 4.5vw, 6rem);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    color: var(--ox-bright);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 980px) {
+    .cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 720px) {
+    .intro-grid {
       grid-template-columns: 1fr;
     }
 
-    .emblem {
+    .about-seal {
       order: -1;
-      justify-items: start;
+      width: 7rem;
     }
 
-    .commit-row {
+    .cards {
       grid-template-columns: 1fr;
-      gap: 0.5rem;
     }
   }
 </style>
