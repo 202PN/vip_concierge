@@ -8,14 +8,28 @@
   default) and ?service=<name> (sent by page CTAs) preselects a specific line.
   "Dates requested" is a multi-select calendar (any number of days, past
   days disabled) that writes "Oct 3, 2026; Oct 4, 2026" to a hidden input.
+  ?vehicle= is honored only when it names a vehicle in the fleet, so a
+  crafted link can't put arbitrary text on the page or in the message.
+  `_gotcha` is Formspree's honeypot: hidden from people, filled by bots,
+  and Formspree silently drops any submission that has it set.
 */
 import { allServices } from "../data/services";
+import { vehicles } from "../data/fleet";
 
 const services = [...allServices.map((s) => s.name), "Other / General"];
+const vehicleNames = JSON.stringify(vehicles.map((v) => v.name));
 ---
 
-<form class="inquiry" action="https://formspree.io/f/xvkoredy" method="POST" novalidate>
+<form
+  class="inquiry"
+  action="https://formspree.io/f/xvkoredy"
+  method="POST"
+  novalidate
+  data-vehicles={vehicleNames}>
   <input type="hidden" name="vehicle" value="" />
+  <div class="hp" aria-hidden="true">
+    <label>Leave this field empty <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label>
+  </div>
   <fieldset class="service-select">
     <legend>Service <span class="req">required</span></legend>
     <p class="vehicle-line" hidden>
@@ -34,15 +48,15 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
   <div class="grid">
     <div class="field">
       <label for="f-name">Name</label>
-      <input id="f-name" name="name" type="text" autocomplete="name" />
+      <input id="f-name" name="name" type="text" autocomplete="name" maxlength="120" />
     </div>
     <div class="field">
       <label for="f-email">Email <span class="req">required</span></label>
-      <input id="f-email" name="email" type="email" autocomplete="email" required />
+      <input id="f-email" name="email" type="email" autocomplete="email" maxlength="254" required />
     </div>
     <div class="field">
       <label for="f-phone">Phone</label>
-      <input id="f-phone" name="phone" type="tel" autocomplete="tel" />
+      <input id="f-phone" name="phone" type="tel" autocomplete="tel" maxlength="40" />
     </div>
     <div class="field">
       <label for="f-location">Location</label>
@@ -51,6 +65,7 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
         name="location"
         type="text"
         autocomplete="address-level2"
+        maxlength="200"
         placeholder="City or address" />
     </div>
     <div class="field dates">
@@ -100,6 +115,7 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
         type="number"
         inputmode="numeric"
         min="1"
+        max="999"
         step="1"
         placeholder="e.g. 4" />
     </div>
@@ -111,6 +127,7 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
       id="f-message"
       name="message"
       rows="6"
+      maxlength="5000"
       placeholder="Itinerary, pickup and drop-off details, and any security considerations."></textarea>
   </div>
 
@@ -140,9 +157,10 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
   }
 
   // ?vehicle= (sent by fleet cards) names the vehicle in the inquiry and
-  // shows the visitor it carried over.
+  // shows the visitor it carried over. Only known fleet names are accepted.
+  const known: string[] = JSON.parse(form?.dataset.vehicles ?? "[]");
   const vehicle = new URLSearchParams(location.search).get("vehicle");
-  if (vehicle && form) {
+  if (vehicle && form && known.includes(vehicle)) {
     const hidden = form.querySelector<HTMLInputElement>('input[name="vehicle"]');
     const line = form.querySelector<HTMLElement>(".vehicle-line");
     const nameEl = form.querySelector<HTMLElement>(".vehicle-name");
@@ -473,6 +491,14 @@ const services = [...allServices.map((s) => s.name), "Other / General"];
   fieldset {
     border: 0;
     padding: 0;
+  }
+
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
   }
 
   legend {
