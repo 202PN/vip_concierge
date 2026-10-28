@@ -1,50 +1,112 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PageIntro from "../components/PageIntro.astro";
 import CTABlock from "../components/CTABlock.astro";
 
-const points = [
+/*
+  Laid out like the About page, in the client deck's arrangement: the
+  housing network as a two-by-two of cards, the residences as the featured
+  oxblood card spanning both rows beside them, and the partners on a black
+  plate beneath.
+  The deck's rates are deliberately left off the site.
+*/
+interface Feature {
+  title: string;
+  body?: string;
+  kind?: "figure" | "residences";
+}
+
+const features: Feature[] = [
+  {
+    title: "Turnkey, move-in ready",
+    body: "Fully furnished residences equipped with all essential living amenities and utilities.",
+    kind: "figure",
+  },
+  {
+    title: "Strategic locations",
+    body: "Premium properties across Washington, DC, Northern Virginia, and the Baltimore transit corridors.",
+  },
+  {
+    title: "Secure & accessible",
+    body: "Gated and controlled-access properties with pet-friendly options and direct transit access.",
+  },
   {
     title: "Delegation housing",
-    body: "Multiple units in one building or district, so the delegation stays together: principals, staff, and security within reach of each other and the mission.",
+    body: "Multiple units in one building or district, so principals, staff, and security stay within reach of each other and the mission.",
   },
   {
-    title: "Extended official stays",
-    body: "Move-in-ready apartments for stays of weeks or months. Housekeeping, utilities, and support are set up before you arrive.",
+    title: "Preferred extended-stay residences",
+    kind: "residences",
   },
-  {
-    title: "Relocations",
-    body: "A settled address from day one while you find something permanent.",
-  },
-  {
-    title: "Coordinated with transportation",
-    body: "One point of contact covers housing and transportation, so a schedule change updates both.",
-  },
+];
+
+const residences = [
+  { name: "Studio Residence", note: "Ideal for solo executives & specialists" },
+  { name: "One-Bedroom Suite", note: "Full kitchen & dedicated workspace" },
+  { name: "Two-Bedroom Suite", note: "Spacious layout for families & teams" },
+];
+
+const partners = [
+  "Oakwood Worldwide",
+  "Churchill Living",
+  "AKA Whitehouse",
+  "BridgeStreet",
+  "Suite Solutions",
+  "Mark Apartments",
 ];
 ---
 
 <BaseLayout
-  title="Furnished Apartments — Delegation & Extended-Stay Housing | VIP Concierge"
-  description="Fully furnished apartments for delegations, relocations, and extended official stays in the Washington, DC region, arranged and managed under one point of contact with transportation and logistics."
+  title="Luxury Furnished Apartments & Corporate Housing | VIP Concierge"
+  description="Turnkey furnished apartments and corporate housing across Washington, DC, Northern Virginia, and Baltimore: studios, one- and two-bedroom suites for executives, delegations, and extended stays, coordinated with transportation."
 >
-  <PageIntro
-    service="Furnished Apartments"
-    title="Furnished Apartments"
-    lede="Fully furnished apartments for delegations, relocations, and extended stays, managed and coordinated with your transportation."
-  />
+  <section class="apt-intro">
+    <div class="wrap intro-grid">
+      <div class="intro-copy">
+        <p class="eyebrow">Furnished apartments</p>
+        <h1>Luxury furnished apartments &amp; corporate housing</h1>
+        <p class="lede on-ink-soft">
+          Turnkey residences for executives, delegations, and extended stays,
+          coordinated with your transportation.
+        </p>
+      </div>
+      <img class="apt-seal" src="/vip_red.png" alt="" width="200" height="200" />
+    </div>
+  </section>
 
-  <section class="points field-paper">
+  <section class="network field-paper" aria-label="Corporate housing network">
     <div class="wrap">
-      <dl class="list">
-        {points.map((p) => (
-          <div class="row">
-            <dt>{p.title}</dt>
-            <dd class="on-paper-gray">{p.body}</dd>
-          </div>
+      <ul class="cards">
+        {features.map((f) => (
+          <li class:list={["card", f.kind && `card-${f.kind}`]}>
+            {f.kind === "figure" && (
+              <span class="figure" aria-hidden="true">100%</span>
+            )}
+            <h2 class="card-title">{f.title}</h2>
+            {f.body && <p class="card-body">{f.body}</p>}
+            {f.kind === "residences" && (
+              <>
+                <ul class="units">
+                  {residences.map((r) => (
+                    <li>
+                      <span class="unit-name">{r.name}</span>
+                      <span class="unit-note">{r.note}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p class="units-foot">
+                  Full furnishings and utilities included. Subject to availability.
+                </p>
+              </>
+            )}
+          </li>
         ))}
-      </dl>
-      <div class="photo-tbd wide" role="img" aria-label="Apartment photography available on request">
-        Property photography available on request
+      </ul>
+
+      <div class="partners">
+        <h2 class="partners-label">Global hospitality network partners</h2>
+        <ul class="partners-list">
+          {partners.map((name) => <li>{name}</li>)}
+        </ul>
       </div>
     </div>
   </section>
@@ -57,41 +119,222 @@ const points = [
 </BaseLayout>
 
 <style>
-  .points {
-    padding-block: var(--sect);
+  /* Intro: tracked oxblood eyebrow, the headline in the display face, closed
+     by the heavy rule; the seal holds the right margin (as on About). */
+  .apt-intro {
+    padding-block: clamp(3rem, 6vw, 5.5rem) clamp(2.5rem, 5vw, 4rem);
   }
 
-  .list {
-    border-top: 3px solid var(--ink);
-  }
-
-  .row {
+  .intro-grid {
     display: grid;
-    grid-template-columns: minmax(10rem, 16rem) 1fr;
-    gap: 2rem;
-    padding-block: 1.5rem;
-    border-bottom: 1px solid var(--ink);
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: end;
   }
 
-  .row dt {
+  .intro-copy {
+    border-bottom: 3px solid var(--ox-bright);
+    padding-bottom: clamp(1.75rem, 3.5vw, 2.75rem);
+  }
+
+  .eyebrow {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ox-bright);
+    margin-bottom: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  h1 {
+    font-size: clamp(2.25rem, 1rem + 4.2vw, 4.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    max-width: 20ch;
+  }
+
+  .lede {
+    margin-top: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .apt-seal {
+    width: clamp(8rem, 14vw, 12.5rem);
+    height: auto;
+  }
+
+  /* Cards: white square-cornered panels on the warm paper ground, each opened
+     by the oxblood rule. */
+  .network {
+    padding-block: var(--sect);
+    background: var(--paper-dim);
+  }
+
+  .cards {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .card {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    padding: clamp(1.5rem, 2.5vw, 2.25rem);
+    background: var(--paper);
+    border: 1px solid var(--line-paper);
+    border-top: 3px solid var(--ox-bright);
+    box-shadow: 0 1px 2px rgba(13, 13, 14, 0.04);
+    transition: translate 450ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 450ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Hover: lift onto a soft shadow, then drift while the pointer rests. */
+  @media (hover: hover) {
+    .card:hover {
+      translate: 0 -6px;
+      box-shadow: 0 22px 40px -22px rgba(13, 13, 14, 0.35);
+      animation: card-float 3.2s ease-in-out 450ms infinite;
+    }
+  }
+
+  @keyframes card-float {
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+
+  .card-title {
     font-size: var(--text-h3);
     font-weight: 400;
+    line-height: 1.2;
     letter-spacing: -0.01em;
+    text-wrap: pretty;
   }
 
-  .row dd {
-    max-width: 62ch;
+  .card-body {
+    color: var(--gray);
+    max-width: 44ch;
   }
 
-  .wide {
-    margin-top: clamp(2rem, 4vw, 3rem);
-    min-height: 20rem;
+  .figure {
+    font-size: clamp(3.5rem, 2rem + 4.5vw, 6rem);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    color: var(--ox-bright);
   }
 
-  @media (max-width: 860px) {
-    .row {
+  /* Residences: the featured card on the oxblood field, the unit types set
+     in a black plate as in the deck (without the rates). */
+  .card-residences {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    grid-template-rows: auto 1fr auto;
+    align-content: stretch;
+    background: var(--ox);
+    color: var(--paper);
+    border-color: var(--ox);
+    border-top-color: var(--ink);
+  }
+
+  /* The plate fills the card's height; the three units share it evenly. */
+  .units {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-auto-rows: 1fr;
+    background: var(--ink);
+  }
+
+  .units li {
+    display: grid;
+    align-content: center;
+    gap: 0.15rem;
+    padding: 0.85rem 1.25rem;
+  }
+
+  .units li + li {
+    border-top: 1px solid var(--line-onink);
+  }
+
+  .unit-name {
+    font-size: var(--text-lg);
+    font-weight: 500;
+    color: var(--soft);
+  }
+
+  .unit-note {
+    font-size: var(--text-sm);
+    color: var(--soft-ink);
+  }
+
+  .units-foot {
+    font-size: var(--text-xs);
+    color: var(--soft);
+  }
+
+  /* Partners: the deck's black plate, names run on with middots. */
+  .partners {
+    display: grid;
+    gap: 0.75rem;
+    justify-items: center;
+    margin-top: clamp(1rem, 2vw, 1.5rem);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    background: var(--ink);
+    color: var(--paper);
+    text-align: center;
+  }
+
+  .partners-label {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--soft);
+  }
+
+  .partners-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem 0;
+    font-size: var(--text-lg);
+    font-weight: 500;
+  }
+
+  .partners-list li + li::before {
+    content: "\00b7";
+    margin-inline: 0.75rem;
+    color: var(--ox-bright);
+  }
+
+  @media (max-width: 980px) {
+    .cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card-residences {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .intro-grid {
       grid-template-columns: 1fr;
-      gap: 0.5rem;
+    }
+
+    .apt-seal {
+      order: -1;
+      width: 7rem;
+    }
+
+    .cards {
+      grid-template-columns: 1fr;
     }
   }
 </style>
