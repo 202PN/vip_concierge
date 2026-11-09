@@ -50,9 +50,29 @@ const year = new Date().getFullYear();
 
     <div class="legal">
       <p>© {year} VIP Concierge. All rights reserved.</p>
+      <ul class="policies">
+        <li><a href="/privacy">Privacy Policy</a></li>
+        <li><a href="/terms">Terms of Use</a></li>
+      </ul>
       <ul class="social">
-        <li><a href="https://facebook.com/DCVIPCONCIERGE" rel="noopener">Facebook</a></li>
-        <li><a href="https://twitter.com/DCVIPconcierge" rel="noopener">X&nbsp;(Twitter)</a></li>
+        <li>
+          <a href="https://facebook.com/DCVIPCONCIERGE" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
+            Facebook
+          </a>
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/company/vip-concierge-llc/" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
+            LinkedIn
+          </a>
+        </li>
+        <li>
+          <a href="https://twitter.com/DCVIPconcierge" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" /></svg>
+            X&nbsp;(Twitter)
+          </a>
+        </li>
       </ul>
       <p class="on-ink-soft">Available 24 hours a day, 7 days a week.</p>
     </div>
@@ -148,7 +168,7 @@ const year = new Date().getFullYear();
   .legal {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     gap: 1.5rem;
     flex-wrap: wrap;
     border-top: 1px solid var(--line-onink);
@@ -157,20 +177,37 @@ const year = new Date().getFullYear();
     font-size: var(--text-xs);
   }
 
-  .social {
+  .social,
+  .policies {
     list-style: none;
     padding: 0;
     display: flex;
-    gap: 1.25rem;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
   }
 
-  .social a {
+  .social a,
+  .policies a {
     color: var(--paper);
     font-weight: 500;
     text-decoration: none;
   }
 
-  .social a:hover {
+  .social a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .social svg {
+    width: 0.875rem;
+    height: 0.875rem;
+    fill: currentColor;
+    flex: none;
+  }
+
+  .social a:hover,
+  .policies a:hover {
     color: var(--ox-bright);
   }
 
